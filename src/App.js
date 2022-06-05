@@ -1,7 +1,15 @@
+import React from 'react'
+
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+
+  window.api.receive("fromMain", (data) => {
+      console.log('Received '+data+' from main process');
+  });
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +26,7 @@ function App() {
           Learn React
         </a>
       </header>
+      <button onClick={() => window.api.send("toMain", "ping")}>send</button>
     </div>
   );
 }

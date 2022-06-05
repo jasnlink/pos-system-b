@@ -1,29 +1,63 @@
+/********************************************************************************************************
+ * 
+ * Initialize Electron base
+ * 
+********************************************************************************************************/
+
 //if electron is in development mode, disable before building
 const isDev = true;
 
-const { app, BrowserWindow } = require('electron');
+const { 
+  app, 
+  BrowserWindow, 
+  ipcMain 
+} = require('electron');
+
 const path = require('path');
+const fs = require("fs");
+
+const sqlite3 = require('sqlite3');
+
+const database = new sqlite3.Database('./public/store.sqlite3', (err) => {
+    if (err) console.error('Database opening error: ', err);
+});
+
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow;
 
 function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+  mainWindow = new BrowserWindow({
+    width: 1280,
+    height: 1024,
     webPreferences: {
-      nodeIntegration: true,
+      defaultFontFamily: 'sansSerif',
+      nodeIntegration: false, // is default value after Electron v5
+      webSecurity: true,
+      contextIsolation: true, // protect against prototype pollution
+      enableRemoteModule: false, // turn off remote
+      preload: path.join(__dirname, "preload.js") // use a preload script
     },
+    resizable: false,
+    alwaysOnTop: false,
+    minimizable: true,
+    frame: true,
+    fullscreen: false,
+    //titleBarStyle: 'hidden'
   });
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
-  win.loadURL(
+  mainWindow.loadURL(
     isDev
       ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
   // Open the DevTools.
   if (isDev) {
-    win.webContents.openDevTools({ mode: 'detach' });
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
   }
 }
 
@@ -46,3 +80,23 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+
+
+
+/********************************************************************************************************
+ * 
+ * Write/Read Operations
+ * 
+********************************************************************************************************/
+
+// Receive async message from renderer
+// See file renderer.js on line 3
+ipcMain.on('toMain', (event, data) => {
+  // It's so good because below have a delay 5s to execute, and this don't lock rendereder :)
+    console.log(data)
+    // Send reply to a renderer
+    if(data === 'ping') {
+      win.webContents.send('fromMain', 'pong')
+    }
+})

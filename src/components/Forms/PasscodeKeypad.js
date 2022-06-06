@@ -66,69 +66,69 @@ function PasscodeKeypad({ passcode, passcodeInput, setPasscodeInput, setValid })
 			<div className="row passcode-keypad-error">
 				<p className={error ? "mt-0 mb-4 visible" : "mt-0 mb-4 invisible"}><strong>Wrong Passcode</strong></p>
 			</div>
-			<div className="row">
-				<div className="col">
+			<div className="row justify-content-center">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(1)}>
 						1
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(2)}>
 						2
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(3)}>
 						3
 					</div>
 				</div>
 			</div>
-			<div className="row">
-				<div className="col">
+			<div className="row justify-content-center">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(4)}>
 						4
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(5)}>
 						5
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(6)}>
 						6
 					</div>
 				</div>
 			</div>
-			<div className="row">
-				<div className="col">
+			<div className="row justify-content-center">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(7)}>
 						7
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(8)}>
 						8
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(9)}>
 						9
 					</div>
 				</div>
 			</div>
-			<div className="row">
-				<div className="col">
+			<div className="row justify-content-center">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput('del')}>
 						{backspaceIcon}
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput(0)}>
 						0
 					</div>
 				</div>
-				<div className="col">
+				<div className="col d-flex justify-content-center">
 					<div className="passcode-keypad-btn" onClick={() => handleKeypadInput('enter')}>
 						{enterIcon}
 					</div>

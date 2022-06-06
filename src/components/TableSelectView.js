@@ -3,6 +3,7 @@ import React from 'react'
 import './TableSelectView.css'
 
 import Keypad from './Forms/Keypad'
+import TableNumberDisplay from './Forms/TableNumberDisplay'
 
 function TableSelectView() {
 
@@ -24,6 +25,7 @@ function TableSelectView() {
 						<h1 className="display-6 display-title">
 							Table Number
 						</h1>
+						<TableNumberDisplay />
 						<Keypad />
 					</div>
 				</div>

@@ -11,8 +11,9 @@
 	fill: currentColor;
 }
 
-.keypad-error {
-	color: red;
+.keypad-container {
+	max-width: 80%;
+	padding: 0 !important;
 }
 
 .keypad-btn {

@@ -30,8 +30,9 @@ let mainWindow;
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 1024,
+    width: 1366,
+    height: 768,
+    useContentSize: true,
     webPreferences: {
       defaultFontFamily: 'sansSerif',
       nodeIntegration: false, // is default value after Electron v5

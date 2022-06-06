@@ -1,0 +1,40 @@
+.passcode-backspace-icon {
+	height: 64px;
+	width: 64px;
+	fill: currentColor;
+}
+
+.passcode-enter-icon {
+	margin-top: 4px;
+	height: 64px;
+	width: 64px;
+	fill: currentColor;
+}
+
+.passcode-keypad-error {
+	color: red;
+}
+
+.passcode-keypad-btn {
+	display: flex;
+	margin: 10px 0;
+	height: 84px;
+	width: 84px;
+	font-size: 32px;
+	font-weight: 600;
+	border-radius: 64px;
+	border: solid 2px #a5a5a545;
+	background-color: #202020;
+	color: #ffffff;
+	align-items:center;
+    justify-content:center;
+    cursor: pointer;
+}
+
+.passcode-keypad-btn:hover {
+	background-color: #363636;
+}
+
+.passcode-keypad-btn:active {
+	background-color: #797979;
+}

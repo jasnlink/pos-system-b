@@ -1,0 +1,20 @@
+.display-title {
+	color: #ffffff;
+}
+
+.dot {
+	fill: none;
+	stroke: #ffffff;
+	stroke-width: 2px;
+}
+
+.dot-filled {
+	fill: #ffffff;
+	stroke: #ffffff;
+	stroke-width: 2px;
+}
+
+.dot-icon {
+	height: 32px;
+	width: 32px;
+}

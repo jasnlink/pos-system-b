@@ -1,33 +1,16 @@
 import React from 'react'
+import Core from './components/Core';
 
-import logo from './logo.svg';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
 function App() {
 
-  window.api.receive("fromMain", (data) => {
-      console.log('Received '+data+' from main process');
-  });
-
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload......
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      <button onClick={() => window.api.send("toMain", "ping")}>send</button>
-    </div>
+    <>
+      <div id="background" className="bg-black min-vw-100 min-vh-100">
+        <Core />
+      </div>
+    </>
   );
 }
 

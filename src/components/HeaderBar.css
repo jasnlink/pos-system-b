@@ -1,0 +1,28 @@
+.main {
+	padding: 2px 0;
+	height: 48px;
+}
+
+.date-display {
+	color: #ffffff;
+	font-weight: 300;
+}
+
+.time-display {
+	color: #ffffff;
+	font-weight: 400;
+	margin-right: -64px;
+}
+
+.second,
+.minute,
+.hour {
+	display: inline-block;
+	margin-right: 2px;
+}
+
+.minute::after,
+.hour::after {
+	content: ":";
+	margin-left: 2px;
+}

@@ -1,0 +1,13 @@
+.display-title {
+	color: #ffffff;
+}
+
+.view-left,
+.view-center,
+.view-right {
+	min-height: calc(100vh - 50px);
+}
+.view-left,
+.view-center {
+	border-right: solid #a5a5a580 1px;
+}

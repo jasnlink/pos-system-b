@@ -41,7 +41,12 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 			if (cacheInput.length <= 0) {
 				return
 			}
-			return setTableInputDisplay('')
+
+			return window.api.fetchTable(parseInt(tableInputDisplay))
+			.then((res) => {
+				console.log(res)
+				return setTableInputDisplay('')
+			})
 			
 		}
 

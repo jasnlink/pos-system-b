@@ -1,5 +1,19 @@
 /********************************************************************************************************
  * 
+ * Initialize sqlite store
+ * 
+********************************************************************************************************/
+
+const sqlite = require('sqlite');
+
+const database = new sqlite.Database('./public/store.sqlite3', (err) => {
+    if (err) console.error('Database opening error: ', err);
+});
+
+
+
+/********************************************************************************************************
+ * 
  * Initialize Electron base
  * 
 ********************************************************************************************************/
@@ -15,13 +29,6 @@ const {
 
 const path = require('path');
 const fs = require("fs");
-
-const sqlite = require('sqlite');
-
-const database = new sqlite.Database('./public/store.sqlite3', (err) => {
-    if (err) console.error('Database opening error: ', err);
-});
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -92,12 +99,8 @@ app.on('activate', () => {
 ********************************************************************************************************/
 
 // Receive async message from renderer
-// See file renderer.js on line 3
-ipcMain.on('toMain', (event, data) => {
-  // It's so good because below have a delay 5s to execute, and this don't lock rendereder :)
-    console.log(data)
-    // Send reply to a renderer
-    if(data === 'ping') {
-      win.webContents.send('fromMain', 'pong')
-    }
+ipcMain.handle('fetch-table', async (event, args) => {
+   
+  console.log('fetching table...', args)
+  return "foo";
 })

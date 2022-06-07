@@ -100,7 +100,10 @@ app.on('activate', () => {
 
 // Receive async message from renderer
 ipcMain.handle('fetch-table', async (event, args) => {
-   
+
+  //lookup if table exists
+    //if exist, return that table
+    //if doesnt exist then create the table and return that table
   console.log('fetching table...', args)
   return "foo";
 })

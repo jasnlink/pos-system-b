@@ -6,15 +6,7 @@ const backspaceIcon = (<svg className="backspace-icon" xmlns="http://www.w3.org/
 const enterIcon = (<svg className="enter-icon" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 100 100" x="0px" y="0px"><path d="M70.3,53.1l-7.1,7.1A2.7,2.7,0,1,0,67,64.1L79,52.2a2.7,2.7,0,0,0,0-3.9L67.3,36.6a2.7,2.7,0,0,0-3.9,3.9l7.1,7.1H26.4V38.6a2.7,2.7,0,0,0-5.4,0V50.4a2.7,2.7,0,0,0,2.7,2.7H70.3Z"></path></svg>)
 
 
-function Keypad({  }) {
-
-
-
-	function handleKeypadInput(key) {
-
-		return
-		
-	}
+function Keypad({ handleKeypadInput }) {
 
 
 	return (

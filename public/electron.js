@@ -16,9 +16,9 @@ const {
 const path = require('path');
 const fs = require("fs");
 
-const sqlite3 = require('sqlite3');
+const sqlite = require('sqlite');
 
-const database = new sqlite3.Database('./public/store.sqlite3', (err) => {
+const database = new sqlite.Database('./public/store.sqlite3', (err) => {
     if (err) console.error('Database opening error: ', err);
 });
 

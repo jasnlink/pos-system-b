@@ -7,7 +7,7 @@ function HeaderBar({ date, time }) {
 
 	return (
 
-		<div className="container-fluid main">
+		<div className="container-fluid headerbar-main">
 			<div className="row justify-content-center">
 				<div className="col-2 text-center">
 					<p className="h4 time-display">{time}</p>

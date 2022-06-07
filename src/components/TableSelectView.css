@@ -1,3 +1,7 @@
+.tableview-main {
+	border-top: solid #a5a5a545 1px;
+}
+
 .display-title {
 	color: #ffffff;
 }
@@ -6,9 +10,8 @@
 .view-center,
 .view-right {
 	min-height: calc(100vh - 50px);
-	border-top: solid #a5a5a580 1px;
 }
 .view-left,
 .view-center {
-	border-right: solid #a5a5a580 1px;
+	border-right: solid #a5a5a545 1px;
 }

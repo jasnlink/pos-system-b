@@ -2,13 +2,13 @@ import React from 'react'
 
 import './TableNumberDisplay.css'
 
-function TableNumberDisplay() {
+function TableNumberDisplay({ tableInputDisplay }) {
 
 	return (
 		<>
-			<div className="container-fluid w-75 bg-dark mt-3 mb-5">
+			<div className="container-fluid w-75 mt-3 mb-5 table-display-main">
 				<div className="row">
-					<p className="h1 table-display">156</p>
+					<p className="h1 table-display">{tableInputDisplay}</p>
 				</div>
 			</div>
 		</>

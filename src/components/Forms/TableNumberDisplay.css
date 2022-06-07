@@ -1,3 +1,8 @@
+.table-display-main {
+	min-height: 56px;
+	background-color: #202020;
+}
+
 .table-display {
 	color: #ffffff;
 }

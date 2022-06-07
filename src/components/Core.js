@@ -9,6 +9,9 @@ function Core() {
 	//keeps track of where we are in the app
 	const [step, setStep] = useState(1);
 
+	//tracks currently selected table
+	const [selectedTable, setSelectedTable] = useState()
+
 	//keep track of current date
 	const [date, setDate] = useState('')
 	//keep track of current time
@@ -85,11 +88,22 @@ function Core() {
 				</>
 		      )
 
-	   	case 2:
+	   	case 10:
 		    return (
 		    	<>
 		    		<HeaderBar date={date} time={time} />
 			    	<TableSelectView
+						setStep={step => setStep(step)}
+						selectedTable={selectedTable}
+						setSelectedTable={table => setSelectedTable(table)}
+					/>
+				</>
+		      )
+		default:
+			return (
+		    	<>
+		    		<HeaderBar date={date} time={time} />
+			    	<Welcome
 						setStep={step => setStep(step)}
 					/>
 				</>

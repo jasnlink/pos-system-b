@@ -15,7 +15,7 @@ function Welcome({ setStep }) {
 	useEffect(() => {
 
 		if(valid === true) {
-			setStep(2)
+			setStep(10)
 		}
 
 	}, [valid])

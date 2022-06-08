@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Preface from './Preface'
 import Welcome from './Welcome';
 import TableSelectView from './TableSelectView'
+import ClientSelectView from './ClientSelectView'
 import HeaderBar from './HeaderBar'
 
 function Core() {
@@ -15,6 +16,9 @@ function Core() {
 
 	//tracks currently selected table
 	const [selectedTable, setSelectedTable] = useState()
+
+	//tracks currently selected client
+	const [selectedClient, setSelectedClient] = useState()
 
 	//keep track of current date
 	const [date, setDate] = useState('')
@@ -125,12 +129,26 @@ function Core() {
 					/>
 				</>
 		      )
+		case 11:
+		    return (
+		    	<>
+		    		<HeaderBar date={date} time={time} />
+			    	<ClientSelectView
+						setStep={step => setStep(step)}
+						selectedTable={selectedTable}
+						setSelectedTable={table => setSelectedTable(table)}
+						selectedClient={selectedClient}
+						setSelectedClient={client => setSelectedClient(client)}
+					/>
+				</>
+		      )
 		default:
 			return (
 		    	<>
 		    		<HeaderBar date={date} time={time} />
 			    	<Welcome
 						setStep={step => setStep(step)}
+						passcode={passcode}
 					/>
 				</>
 		      )

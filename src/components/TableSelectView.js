@@ -5,9 +5,15 @@ import './TableSelectView.css'
 import Keypad from './Forms/Keypad'
 import TableNumberDisplay from './Forms/TableNumberDisplay'
 
+
+import { ReactComponent as TableCancelIcon } from './assets/cancelIcon.svg'
+import { ReactComponent as TableConfirmIcon } from './assets/confirmIcon.svg'
+
+
 function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 
 	const [tables, setTables] = useState([])
+	const [selectedTableInList, setSelectedTableInList] = useState()
 
 	useEffect(() => {
 
@@ -63,7 +69,7 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 				number: parseInt(tableInputDisplay),
 			})
 			window.api.reply('fetch-table', (event, res) => {
-				
+
 				setSelectedTable(res)
 
 				//fetch all open tables
@@ -71,13 +77,12 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 				window.api.reply('list-table', (event, res) => {
 
 					setTables(res)
-					
+					setStep(11)
+
 				})
 			})
 
 			setTableInputDisplay('')
-
-			
 
 		}
 
@@ -85,31 +90,59 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 		
 	}
 
+	function handleSelectTable() {
+
+		const table = selectedTableInList
+
+		setTableInputDisplay('')
+		setSelectedTable(table)
+		setSelectedTableInList()
+		setStep(11)
+
+	}
+
+
 	return (
 
 			<div className="container-fluid tableview-main">
 				<div className="row text-center">
-					<div className="col-4 view-left pt-4">
+					<div className="col-4 tableview-left pt-4">
 						<h1 className="display-6 display-title">
-							We in!
+							LOGO HERE
 						</h1>
 					</div>
-					<div className="col-4 view-center p-0">
-						<ul className="table-list">
-							{tables?.map((table, index) => (
+					<div className="col-4 tableview-center p-0">
+						<div className="row p-0 gx-0">
+							<ul className="table-list">
+								{tables?.map((table, index) => (
 
-								<li 
-									className={selectedTable?.table_id === table.table_id ? "table-list-item table-list-item-active" : "table-list-item"} 
-									key={index}
-									onClick={() => setSelectedTable(table)}
-								>
-									Table #{table.table_number}
-								</li>
+									<li 
+										className={selectedTableInList?.table_id === table.table_id ? "table-list-item table-list-item-active" : "table-list-item"} 
+										key={index}
+										onClick={() => setSelectedTableInList(table)}
+									>
+										Table #{table.table_number}
+									</li>
 
-							))}
-						</ul>
+								))}
+							</ul>
+						</div>
+						<div className="row gx-0">
+							<div className="table-confirm-panel">
+							{selectedTableInList && (
+							<>
+								<div className="table-cancel-btn" onClick={() => setSelectedTableInList()}>
+									<TableCancelIcon className="table-cancel-icon" /> Cancel
+								</div>
+								<div className="table-confirm-btn" onClick={handleSelectTable}>
+									<TableConfirmIcon className="table-confirm-icon" /> Select
+								</div>
+							</>
+							)}
+							</div>
+						</div>
 					</div>
-					<div className="col-4 view-right pt-4">
+					<div className="col-4 tableview-right pt-4">
 						<h1 className="display-6 display-title">
 							Table Number
 						</h1>

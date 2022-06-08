@@ -7,8 +7,11 @@ const {
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
     "api", {
-        fetchTable: async (args) => {
-            return await ipcRenderer.invoke('fetch-table', args);
+        call: async (channel, data) => {
+            return await ipcRenderer.invoke(channel, data);
+        },
+        reply: async (channel, callback) => {
+            return await ipcRenderer.once(channel, callback)
         },
     }
 );

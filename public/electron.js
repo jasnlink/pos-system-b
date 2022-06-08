@@ -1,12 +1,13 @@
 /********************************************************************************************************
  * 
  * Initialize sqlite store
+ * with npm SQLite@5.0.8
  * 
 ********************************************************************************************************/
 
-const sqlite = require('sqlite');
+const sqlite3 = require('sqlite3').verbose();
 
-const database = new sqlite.Database('./public/store.sqlite3', (err) => {
+const database = new sqlite3.cached.Database('./store.sqlite3', (err) => {
     if (err) console.error('Database opening error: ', err);
 });
 
@@ -27,8 +28,10 @@ const {
   ipcMain 
 } = require('electron');
 
+
 const path = require('path');
 const fs = require("fs");
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -98,12 +101,84 @@ app.on('activate', () => {
  * 
 ********************************************************************************************************/
 
-// Receive async message from renderer
-ipcMain.handle('fetch-table', async (event, args) => {
+//fetch all tables in database
+ipcMain.handle('list-table', async (event, data) => {
 
-  //lookup if table exists
-    //if exist, return that table
-    //if doesnt exist then create the table and return that table
-  console.log('fetching table...', args)
-  return "foo";
+  console.log('fetching all tables...')
+
+  const query = 'SELECT * from pos_tables ORDER BY table_number ASC'
+  database.all(query, function (err, rows) {
+    if (err) {
+      return console.log(err)
+    }
+      return mainWindow.webContents.send('list-table', rows)
+  })
+
+})
+
+
+//looks for table number in the database,
+//if it cant be found, then it creates a new table
+ipcMain.handle('fetch-table', async (event, data) => {
+
+  const number = data.number
+
+  console.log('fetching table by number...', number)
+
+  const query = 'SELECT * from pos_tables WHERE table_number=? ORDER BY table_number ASC'
+  database.get(query, number, function (err, row) {
+    if (err) {
+      return console.log(err)
+    }
+
+    //found matching table, send table data over
+    if (row) {
+      return mainWindow.webContents.send('fetch-table', row)
+    }
+
+    //table not found, create new table
+    const query = 'INSERT INTO pos_tables (table_number) VALUES (?)'
+    database.run(query, number, function (err) {
+      if (err) {
+        return console.log(err)
+      }
+
+      //using this object because its the only way it works...
+      const lastInsertId = this.lastID
+      console.log('table not found, creating new table with id...', lastInsertId)
+
+
+      //table is created, fetch new table info
+      const query = 'SELECT * from pos_tables WHERE table_id=? ORDER BY table_number ASC'
+      database.get(query, lastInsertId, function (err, row) {
+        if (err) {
+          return console.log(err)
+        }
+
+        return mainWindow.webContents.send('fetch-table', row)
+
+      })
+ 
+    })
+     
+  })
+  
+  
+})
+
+
+//fetch 4 digit security pin from database
+ipcMain.handle('fetch-security-pin', async (event, data) => {
+
+  console.log('fetching security pin...')
+
+  const query = 'SELECT security_pin from pos_settings'
+  database.get(query, function (err, row) {
+    if (err) {
+      return console.log(err)
+    }
+
+    return mainWindow.webContents.send('fetch-security-pin', row)
+  })
+
 })

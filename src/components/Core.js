@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import Preface from './Preface'
 import Welcome from './Welcome';
 import TableSelectView from './TableSelectView'
 import HeaderBar from './HeaderBar'
@@ -7,7 +8,10 @@ import HeaderBar from './HeaderBar'
 function Core() {
 
 	//keeps track of where we are in the app
-	const [step, setStep] = useState(1);
+	const [step, setStep] = useState(0);
+
+	//4 digit pin to access tablet
+	const [passcode, setPasscode] = useState()
 
 	//tracks currently selected table
 	const [selectedTable, setSelectedTable] = useState()
@@ -63,10 +67,27 @@ function Core() {
 		return i;
 	}
 
+	async function loopy() {
+		for(let i=0;i<10000;i++) {
+				console.log(i)
+			}
+			return null
+	}
+
+	//initialization
 	useEffect(() => {
 		
-		currentTime()
+		//fetch 4 digit security pin to access tablet
+		window.api.call('fetch-security-pin')
+		window.api.reply('fetch-security-pin', (event, res) => {
 
+			setPasscode(res.security_pin)
+			setStep(1)
+			
+		})
+
+		//initialize clock
+		currentTime()
 		//useEffect cleanup
 		//need to cleanup timers or they perpetuate and stack
 		return(()=>{
@@ -75,15 +96,20 @@ function Core() {
 
 	}, [])
 
-
 	switch(step) {
-
+		case 0:
+			return (
+				<>
+					<Preface />
+				</>
+			)
 		case 1:
 		    return (
 		    	<>
 		    		<HeaderBar date={date} time={time} />
 			    	<Welcome
 						setStep={step => setStep(step)}
+						passcode={passcode}
 					/>
 				</>
 		      )

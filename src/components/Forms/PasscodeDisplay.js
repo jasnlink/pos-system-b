@@ -17,7 +17,7 @@ function PasscodeDisplay({ passcode, passcodeInput }) {
 			//render a filled dot for each digit in input
 			if (passcodeInput.length && i < passcodeInput.length) {
 				content.push(
-					<div className="col">
+					<div className="col" key={i}>
 						<svg className="dot-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
 							<circle className="dot-filled" cx="18" cy="18" r="12"/>
 						</svg>
@@ -26,7 +26,7 @@ function PasscodeDisplay({ passcode, passcodeInput }) {
 			//render empty dot for remaining of passcode length
 			} else {
 				content.push(
-					<div className="col">
+					<div className="col" key={i}>
 						<svg className="dot-icon" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
 							<circle className="dot" cx="18" cy="18" r="12"/>
 						</svg>

@@ -1,10 +1,10 @@
-.backspace-icon {
+.keypad-backspace-icon {
 	height: 64px;
 	width: 64px;
 	fill: currentColor;
 }
 
-.enter-icon {
+.keypad-enter-icon {
 	margin-top: 4px;
 	height: 64px;
 	width: 64px;

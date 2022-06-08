@@ -11,7 +11,6 @@ const database = new sqlite.Database('./public/store.sqlite3', (err) => {
 });
 
 
-
 /********************************************************************************************************
  * 
  * Initialize Electron base
@@ -107,3 +106,5 @@ ipcMain.handle('fetch-table', async (event, args) => {
   console.log('fetching table...', args)
   return "foo";
 })
+
+

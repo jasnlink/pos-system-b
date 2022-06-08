@@ -101,6 +101,33 @@ app.on('activate', () => {
  * 
 ********************************************************************************************************/
 
+
+/********************************************************************************************************
+ * Clients
+********************************************************************************************************/
+
+//fetch all clients in database
+ipcMain.handle('list-client', async (event, data) => {
+
+  const tableId = data.tableId
+
+  console.log('fetching all clients...')
+
+  const query = 'SELECT * from pos_clients WHERE table_id=? ORDER BY client_number ASC'
+  database.all(query, tableId, function (err, rows) {
+    if (err) {
+      return console.log(err)
+    }
+      return mainWindow.webContents.send('list-client', rows)
+  })
+
+})
+
+
+/********************************************************************************************************
+ * Tables
+********************************************************************************************************/
+
 //fetch all tables in database
 ipcMain.handle('list-table', async (event, data) => {
 

@@ -1,0 +1,95 @@
+.clientview-main {
+	border-top: solid #a5a5a545 1px;
+}
+
+.display-title {
+	color: #ffffff;
+}
+
+.clientview-left,
+.clientview-center,
+.clientview-right {
+	min-height: calc(100vh - 50px);
+	max-height: calc(100vh - 50px);
+}
+.clientview-left,
+.clientview-center {
+	border-right: solid #a5a5a545 1px;
+}
+
+
+.client-list {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	color: #ffffff;
+	font-size: 28px;
+	text-align: left;
+	min-height: calc(88vh - 50px);
+	max-height: calc(88vh - 50px);
+	overflow: auto;
+}
+
+.client-list-item {
+	margin: 0;
+	padding: 12px;
+	border-bottom: solid 1px #a5a5a545;
+}
+
+.client-list-item:hover {
+	background-color: #363636;
+}
+
+.client-list-item-active {
+	background-color: #797979;
+}
+
+.client-list-item-active:hover {
+	background-color: #797979;
+}
+
+.client-panel {
+	margin: 0;
+	padding: 2% 0;
+	border-top: solid 1px #a5a5a545;
+	color: #ffffff;
+	min-height: calc(12vh);
+	max-height: calc(12vh);
+	display: flex;
+	align-items: center;
+  	justify-content: center;
+}
+
+.client-cancel-btn,
+.client-confirm-btn {
+	display: inline-flex;
+	border-radius: 6px;
+	margin: 0 2%;
+	height: 100%;
+	width: 100%;
+	font-size: 36px;
+	font-weight: 600;
+	align-items: center;
+  	justify-content: center;
+  	gap: 2%;
+}
+
+.client-cancel-btn {
+	background-color: #cf1208;
+}
+.client-cancel-btn:active {
+	background-color: #eb433a;
+}
+
+.client-confirm-btn {
+	background-color: #009c29;
+}
+.client-confirm-btn:active {
+	background-color: #1ab542;
+}
+
+.client-cancel-icon,
+.client-confirm-icon {
+	display: flex;
+	fill: #ffffff;
+}

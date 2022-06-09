@@ -12,7 +12,9 @@ import { ReactComponent as TableConfirmIcon } from './assets/confirmIcon.svg'
 
 function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 
+	//list of tables
 	const [tables, setTables] = useState([])
+	//selected table, but only in the list, not confirmed yet
 	const [selectedTableInList, setSelectedTableInList] = useState()
 
 	useEffect(() => {

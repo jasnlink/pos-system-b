@@ -27,8 +27,30 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 			})
 			window.api.reply('list-client', (event, res) => {
 
-				setClients(res)
-				
+				//if there are clients associated with the table
+				//then it is an existing table
+				if (res.length) {
+
+					setClients(res)
+					setSelectedClient(res[0])
+
+				} else {
+					//if there are not clients associated yet
+					//with the table then it is a new table
+					//we then move one straight to creating the first client
+					//and they can start adding items to the order
+
+					//fetch all clients in selected table
+					window.api.call('new-table-client', {
+						tableId: selectedTable.table_id,
+					})
+					window.api.reply('new-table-client', (event, res) => {
+						setSelectedClient(res)
+						setStep(20)
+					})
+
+				}
+
 			})
 			
 		})
@@ -46,7 +68,8 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 		window.api.reply('list-client', (event, res) => {
 
 			setClients(res)
-			
+			setSelectedClient(res[0])
+
 		})
 	}
 
@@ -57,7 +80,9 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 					<div className="col-4 clientview-left p-0">
 						<div className="row p-0 gx-0">
 							<ul className="client-list">
-								
+								<h1 className="display-6 display-title">
+									Client #{selectedClient?.client_number}
+								</h1>
 							</ul>
 						</div>
 						<div className="row gx-0">

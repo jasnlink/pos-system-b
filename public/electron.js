@@ -123,6 +123,35 @@ ipcMain.handle('list-client', async (event, data) => {
 
 })
 
+//creates first client for new table
+ipcMain.handle('new-table-client', async (event, data) => {
+
+  const tableId = data.tableId
+
+  console.log('creating first client for table id...', tableId)
+
+  const query = 'INSERT INTO pos_clients (client_number, table_id) VALUES (1, ?)'
+  database.run(query, tableId, function (err) {
+    if (err) {
+      return console.log(err)
+    }
+
+      //using this object because its the only way it works...
+      const lastInsertId = this.lastID
+      console.log('fetching newly created client...', lastInsertId)
+
+      const query = 'SELECT * from pos_clients WHERE client_id=?'
+      database.get(query, lastInsertId, function (err, row) {
+        if (err) {
+          return console.log(err)
+        }
+        return mainWindow.webContents.send('new-table-client', row)
+      })
+
+  })
+
+})
+
 
 /********************************************************************************************************
  * Tables

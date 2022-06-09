@@ -4,6 +4,7 @@ import Preface from './Preface'
 import Welcome from './Welcome';
 import TableSelectView from './TableSelectView'
 import ClientSelectView from './ClientSelectView'
+import ItemSelectView from './ItemSelectView'
 import HeaderBar from './HeaderBar'
 
 function Core() {
@@ -137,6 +138,18 @@ function Core() {
 						setStep={step => setStep(step)}
 						selectedTable={selectedTable}
 						setSelectedTable={table => setSelectedTable(table)}
+						selectedClient={selectedClient}
+						setSelectedClient={client => setSelectedClient(client)}
+					/>
+				</>
+		      )
+		case 20:
+			return (
+		    	<>
+		    		<HeaderBar date={date} time={time} />
+			    	<ItemSelectView
+						setStep={step => setStep(step)}
+						selectedTable={selectedTable}
 						selectedClient={selectedClient}
 						setSelectedClient={client => setSelectedClient(client)}
 					/>

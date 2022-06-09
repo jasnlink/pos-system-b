@@ -4,10 +4,8 @@ import './TableSelectView.css'
 
 import Keypad from './Forms/Keypad'
 import TableNumberDisplay from './Forms/TableNumberDisplay'
-
-
-import { ReactComponent as TableCancelIcon } from './assets/cancelIcon.svg'
-import { ReactComponent as TableConfirmIcon } from './assets/confirmIcon.svg'
+import ConfirmButton from './Forms/ConfirmButton'
+import BackButton from './Forms/BackButton'
 
 
 function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
@@ -133,12 +131,8 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 							<div className="table-confirm-panel">
 							{selectedTableInList && (
 							<>
-								<div className="table-cancel-btn" onClick={() => setSelectedTableInList()}>
-									<TableCancelIcon className="table-cancel-icon" /> Cancel
-								</div>
-								<div className="table-confirm-btn" onClick={handleSelectTable}>
-									<TableConfirmIcon className="table-confirm-icon" /> Select
-								</div>
+								<BackButton onClick={() => setSelectedTableInList()} />
+								<ConfirmButton onClick={handleSelectTable} />
 							</>
 							)}
 							</div>

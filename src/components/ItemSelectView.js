@@ -1,6 +1,8 @@
 import React from 'react'
 import './ItemSelectView.css'
 
+import ConfirmButton from './Forms/ConfirmButton'
+import BackButton from './Forms/BackButton'
 
 function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedClient }) {
 
@@ -30,7 +32,7 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
-								
+								<BackButton onClick={() => setStep(11)} />
 							</div>
 						</div>
 					</div>

@@ -59,37 +59,3 @@
 	align-items: center;
   	justify-content: center;
 }
-
-.client-cancel-btn,
-.client-confirm-btn {
-	display: inline-flex;
-	border-radius: 6px;
-	margin: 0 2%;
-	height: 100%;
-	width: 100%;
-	font-size: 36px;
-	font-weight: 600;
-	align-items: center;
-  	justify-content: center;
-  	gap: 2%;
-}
-
-.client-cancel-btn {
-	background-color: #cf1208;
-}
-.client-cancel-btn:active {
-	background-color: #eb433a;
-}
-
-.client-confirm-btn {
-	background-color: #009c29;
-}
-.client-confirm-btn:active {
-	background-color: #1ab542;
-}
-
-.client-cancel-icon,
-.client-confirm-icon {
-	display: flex;
-	fill: #ffffff;
-}

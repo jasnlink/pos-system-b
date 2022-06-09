@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 import './ClientSelectView.css'
 
-import { ReactComponent as CancelIcon } from './assets/cancelIcon.svg'
-import { ReactComponent as ConfirmIcon } from './assets/confirmIcon.svg'
+import ConfirmButton from './Forms/ConfirmButton'
+import BackButton from './Forms/BackButton'
 
 
 function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedClient, setSelectedClient }) {
@@ -73,6 +73,15 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 		})
 	}
 
+	function handleGoBack() {
+		if(selectedClient) {
+			console.log(selectedClient)
+			return setSelectedClient()
+		}
+		setStep(10)
+		
+	}
+
 	return (
 
 		<div className="container-fluid clientview-main">
@@ -109,7 +118,14 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
-								
+
+								<BackButton onClick={handleGoBack} />
+
+							{selectedClient && (
+							<>
+								<ConfirmButton onClick={() => setStep(20)} />
+							</>
+							)}
 							</div>
 						</div>
 					</div>

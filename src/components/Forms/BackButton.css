@@ -1,0 +1,24 @@
+.back-btn {
+	display: inline-flex;
+	border-radius: 6px;
+	margin: 0 2%;
+	height: 100%;
+	width: 100%;
+	font-size: 36px;
+	font-weight: 600;
+	align-items: center;
+  	justify-content: center;
+  	gap: 2%;
+}
+
+.back-btn {
+	background-color: #cf1208;
+}
+.back-btn:active {
+	background-color: #eb433a;
+}
+
+.back-icon {
+	display: flex;
+	fill: #ffffff;
+}

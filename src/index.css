@@ -21,3 +21,7 @@ body {
   border: 6px solid transparent;
   background-clip: content-box;
 }
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #bcbcc198;
+}

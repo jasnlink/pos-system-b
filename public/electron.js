@@ -106,7 +106,7 @@ app.on('activate', () => {
  * Clients
 ********************************************************************************************************/
 
-//fetch all clients in database
+//fetch all clients selected table in database
 ipcMain.handle('list-client', async (event, data) => {
 
   const tableId = data.tableId
@@ -220,6 +220,46 @@ ipcMain.handle('fetch-table', async (event, data) => {
   })
   
   
+})
+
+/********************************************************************************************************
+ * Categories
+********************************************************************************************************/
+
+//fetch all categories in database
+ipcMain.handle('list-category', async (event, data) => {
+
+  console.log('fetching all categories...')
+
+  const query = 'SELECT * from pos_categories ORDER BY category_sort_id ASC'
+  database.all(query, function (err, rows) {
+    if (err) {
+      return console.log(err)
+    }
+      return mainWindow.webContents.send('list-category', rows)
+  })
+
+})
+
+/********************************************************************************************************
+ * Items
+********************************************************************************************************/
+
+//fetch all items in selected categories in database
+ipcMain.handle('list-item', async (event, data) => {
+
+  const categoryId = data.categoryId
+
+  console.log('fetching all items in category...', categoryId)
+
+  const query = 'SELECT * from pos_items WHERE category_id=? ORDER BY item_sort_id ASC'
+  database.all(query, categoryId, function (err, rows) {
+    if (err) {
+      return console.log(err)
+    }
+      return mainWindow.webContents.send('list-item', rows)
+  })
+
 })
 
 /********************************************************************************************************

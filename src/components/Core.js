@@ -72,12 +72,6 @@ function Core() {
 		return i;
 	}
 
-	async function loopy() {
-		for(let i=0;i<10000;i++) {
-				console.log(i)
-			}
-			return null
-	}
 
 	//initialization
 	useEffect(() => {

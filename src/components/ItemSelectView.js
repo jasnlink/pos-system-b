@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './ItemSelectView.css'
 
 import ConfirmButton from './Forms/ConfirmButton'
@@ -6,11 +6,58 @@ import BackButton from './Forms/BackButton'
 
 function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedClient }) {
 
+	//list containing categories and items
+	const [categories, setCategories] =  useState([])
+	const [items, setItems] = useState([])
+
+	//tracks currently selected list items
+	const [selectedItemInList, setSelectedItemInList] = useState()
+	const [selectedCategoryInList, setSelectedCategoryInList] = useState()
+
+	
+	useEffect(() => {
+
+		//initialization
+
+		//fetch all open tables
+		window.api.call('list-category')
+		window.api.reply('list-category', (event, res) => {
+
+			setCategories(res)
+
+		})
+
+	}, [])
+
+
+	function handleSelectCategory(category) {
+
+		setSelectedItemInList()
+		setSelectedCategoryInList(category)
+
+		window.api.call('list-item', {
+			categoryId: category.category_id
+		})
+		window.api.reply('list-item', (event, res) => {
+
+			//populate list and auto select first item in list
+			setItems(res)
+
+		})
+
+	}
+
+	function formatPrice(price) {
+
+		return null
+
+	}
+
 	return (
 
-		<div className="container-fluid clientview-main">
+		<div className="container-fluid itemview-main">
 				<div className="row text-center">
-					<div className="col-4 clientview-left p-0">
+					<div className="col-4 itemview-left p-0">
 						<div className="row p-0 gx-0">
 							<ul className="client-list">
 								<h1 className="display-6 display-title">
@@ -24,26 +71,51 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 							</div>
 						</div>
 					</div>
-					<div className="col-4 clientview-center p-0">
+					<div className="col-4 itemview-center p-0">
 						<div className="row p-0 gx-0">
-							<ul className="client-list">
-								
+							<ul className="item-list">
+								{items?.map((item, index) => (
+
+									<li 
+										className={selectedItemInList?.item_id === item.item_id ? "item-list-item item-list-item-active" : "item-list-item"} 
+										key={index}
+										onClick={() => setSelectedItemInList(item)}
+									>
+										<div className="item-list-item-name">
+											{item.item_name}
+										</div>
+										<div className="item-list-item-price">
+											$ {item.item_price}
+										</div>
+									</li>
+
+								))}
 							</ul>
 						</div>
 						<div className="row gx-0">
-							<div className="client-panel">
+							<div className="item-panel">
 								<BackButton onClick={() => setStep(11)} />
 							</div>
 						</div>
 					</div>
-					<div className="col-4 clientview-right p-0">
+					<div className="col-4 itemview-right p-0">
 						<div className="row p-0 gx-0">
-							<ul className="table-list">
-								
+							<ul className="category-list">
+								{categories?.map((category, index) => (
+
+									<li 
+										className={selectedCategoryInList?.category_id === category.category_id ? "category-list-item category-list-item-active" : "category-list-item"} 
+										key={index}
+										onClick={() => handleSelectCategory(category)}
+									>
+										{category.category_name}
+									</li>
+
+								))}
 							</ul>
 						</div>
 						<div className="row gx-0">
-							<div className="client-panel">
+							<div className="category-panel">
 
 							</div>
 						</div>

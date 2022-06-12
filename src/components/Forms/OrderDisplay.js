@@ -64,11 +64,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 					</div>
 				</>
 			)}
-			{!selectChange && (
-				<h1 className="line-list-header-title-front">
-					#{order.order_id}
-				</h1>
-			)}	
+	
 			</div>
 			<ul className="line-list">
 				

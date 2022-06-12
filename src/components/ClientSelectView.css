@@ -30,21 +30,21 @@
 	overflow: auto;
 }
 
-.client-list-item {
+.client-list-element {
 	margin: 0;
 	padding: 12px;
 	border-bottom: solid 1px #a5a5a545;
 }
 
-.client-list-item:hover {
+.client-list-element:hover {
 	background-color: #363636;
 }
 
-.client-list-item-active {
+.client-list-element-active {
 	background-color: #797979;
 }
 
-.client-list-item-active:hover {
+.client-list-element-active:hover {
 	background-color: #797979;
 }
 

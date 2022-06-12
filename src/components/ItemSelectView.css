@@ -14,7 +14,7 @@
 }
 .itemview-left,
 .itemview-center {
-	border-right: solid #a5a5a545 1px;
+	border-right: solid #a5a5a545 3px;
 }
 
 .category-list,
@@ -30,37 +30,37 @@
 	overflow: auto;
 }
 
-.category-list-item,
-.item-list-item {
+.category-list-element,
+.item-list-element {
 	margin: 0;
 	padding: 12px;
 	border-bottom: solid 1px #a5a5a545;
 }
 
-.item-list-item {
+.item-list-element {
 	display: flex;
 	justify-content: space-between;
 }
 
-.category-list-item:hover,
-.item-list-item:hover {
+.category-list-element:hover,
+.item-list-element:hover {
 	background-color: #363636;
 }
 
-.item-list-item:active {
+.item-list-element:active {
 	background-color: #797979;
 }
 
-.category-list-item-active {
+.category-list-element-active {
 	background-color: #797979;
 }
 
-.category-list-item-active:hover {
+.category-list-element-active:hover {
 	background-color: #797979;
 }
 
-.item-list-item-name,
-.item-list-item-price {
+.item-list-element-name,
+.item-list-element-price {
 	display: inline-flex;
 }
 
@@ -68,7 +68,7 @@
 .item-panel {
 	margin: 0;
 	padding: 2% 0;
-	border-top: solid 1px #a5a5a545;
+	border-top: solid 3px #a5a5a545;
 	color: #ffffff;
 	min-height: calc(12vh);
 	max-height: calc(12vh);

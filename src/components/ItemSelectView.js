@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import './ItemSelectView.css'
 
+import OrderDisplay from './Forms/OrderDisplay'
 import PanelButton from './Forms/PanelButton'
 
-function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedClient }) {
+function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedClient, date, time }) {
 
 	//list containing categories and items
 	const [categories, setCategories] =  useState([])
@@ -12,8 +13,11 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 	//tracks currently selected list items
 	const [selectedItemInList, setSelectedItemInList] = useState()
 	const [selectedCategoryInList, setSelectedCategoryInList] = useState()
+	const [selectedLineItemInList, setSelectedLineItemInList] = useState()
 
-	
+	//order object
+	const [order, setOrder] = useState({})
+
 	useEffect(() => {
 
 		//initialization
@@ -23,6 +27,17 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 		window.api.reply('list-category', (event, res) => {
 
 			setCategories(res)
+
+			window.api.call('fetch-order', {
+				tableId: selectedTable.table_id,
+				clientId: selectedClient.client_id
+			})
+			window.api.reply('fetch-order', (event, res) => {
+
+				console.log(res)
+				setOrder(res)
+
+			})
 
 		})
 
@@ -39,7 +54,7 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 		})
 		window.api.reply('list-item', (event, res) => {
 
-			//populate list and auto select first item in list
+			//populate list
 			setItems(res)
 
 		})
@@ -49,13 +64,60 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 	//formats price from cents to dollars
 	function formatPrice(price) {
 
+		if (price === 0) {
+			return '$0.00'
+		}
+
+		if(!price) {
+			return null
+		}
+
 		price = price.toString()
 
-		let dollars = price.slice(0, -2)
-		let cents = price.slice(-2, price.length)
+		if (price.length > 2) {
+			let dollars = price.slice(0, -2)
+			let cents = price.slice(-2, price.length)
 
-		return dollars + '.' + cents
+			return '$' + dollars + '.' + cents
+		}
 
+		if (price.length === 2) {
+			return '$0.' + price
+		}
+
+		if (price.length === 1) {
+			return '$0.0' + price
+		}
+		
+		return null
+
+	}
+
+	function handleAddItem(item) {
+
+		window.api.call('add-item-order', {
+			orderId: order.order_id,
+			item: item
+		})
+		window.api.reply('add-item-order', (event, res) => {
+
+			setOrder(res)
+
+		})
+	}
+
+	function handleRemoveItem() {
+
+		window.api.call('remove-item-order', {
+			orderId: order.order_id,
+			line: selectedLineItemInList
+		})
+		window.api.reply('remove-item-order', (event, res) => {
+
+			setSelectedLineItemInList()
+			setOrder(res)
+
+		})
 	}
 
 	return (
@@ -64,11 +126,18 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 				<div className="row text-center">
 					<div className="col-4 itemview-left p-0">
 						<div className="row p-0 gx-0">
-							<ul className="client-list">
-								<h1 className="display-6 display-title">
-									Table #{selectedTable.table_number} Client #{selectedClient.client_number}
-								</h1>
-							</ul>
+						{!!order && (
+
+							<OrderDisplay 
+								table={selectedTable}
+								client={selectedClient}
+								order={order}
+								select={selectedLineItemInList}
+								selectChange={sel => setSelectedLineItemInList(sel)}
+							/>
+
+						)}
+							
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
@@ -77,6 +146,8 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 								/>
 								<PanelButton
 									type="remove"
+									disabled={!selectedLineItemInList}
+									onClick={handleRemoveItem}
 								/>
 							</div>
 						</div>
@@ -87,15 +158,15 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 								{items?.map((item, index) => (
 
 									<li 
-										className={selectedItemInList?.item_id === item.item_id ? "item-list-item item-list-item-active" : "item-list-item"} 
+										className="item-list-element"
 										key={index}
-										onClick={() => setSelectedItemInList(item)}
+										onClick={() => handleAddItem(item)}
 									>
-										<div className="item-list-item-name">
+										<div className="item-list-element-name">
 											{item.item_name}
 										</div>
-										<div className="item-list-item-price">
-											$ {formatPrice(item.item_price)}
+										<div className="item-list-element-price">
+											{formatPrice(item.item_price)}
 										</div>
 									</li>
 
@@ -120,7 +191,7 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 								{categories?.map((category, index) => (
 
 									<li 
-										className={selectedCategoryInList?.category_id === category.category_id ? "category-list-item category-list-item-active" : "category-list-item"} 
+										className={selectedCategoryInList?.category_id === category.category_id ? "category-list-element category-list-element-active" : "category-list-element"} 
 										key={index}
 										onClick={() => handleSelectCategory(category)}
 									>

@@ -109,7 +109,7 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 								{clients?.map((client, index) => (
 
 									<li 
-										className={selectedClient?.client_id === client.client_id ? "client-list-item client-list-item-active" : "client-list-item"} 
+										className={selectedClient?.client_id === client.client_id ? "client-list-element client-list-element-active" : "client-list-element"} 
 										key={index}
 										onClick={() => setSelectedClient(client)}
 									>
@@ -143,7 +143,7 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 								{tables?.map((table, index) => (
 
 									<li 
-										className={selectedTable?.table_id === table.table_id ? "table-list-item table-list-item-active" : "table-list-item"} 
+										className={selectedTable?.table_id === table.table_id ? "table-list-element table-list-element-active" : "table-list-element"} 
 										key={index}
 										onClick={() => handleSelectTable(table)}
 									>

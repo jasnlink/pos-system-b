@@ -116,7 +116,7 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 								{tables?.map((table, index) => (
 
 									<li 
-										className={selectedTableInList?.table_id === table.table_id ? "table-list-item table-list-item-active" : "table-list-item"} 
+										className={selectedTableInList?.table_id === table.table_id ? "table-list-element table-list-element-active" : "table-list-element"} 
 										key={index}
 										onClick={() => setSelectedTableInList(table)}
 									>

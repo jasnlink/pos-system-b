@@ -72,10 +72,10 @@
 
 /* payment */
 .payment-btn {
-	background-color: #2c5bcc;
+	background-color: #067bc2;
 }
 .payment-btn:active {
-	background-color: #3772ff;
+	background-color: #3895ce;
 }
 /**********************/
 
@@ -86,6 +86,11 @@
 }
 .remove-btn:active {
 	background-color: #eb433a;
+}
+.remove-btn-disabled {
+	pointer-events: none;
+	color: #ffffff80;
+	background-color: #cf120880
 }
 /**********************/
 

@@ -1,0 +1,147 @@
+.order-view {
+	min-height: calc(88vh - 50px);
+	max-height: calc(88vh - 50px);
+	display: flex;
+	flex-direction: column;
+}
+
+.total-list {
+	display: flex;
+	flex-direction: column;
+	margin-top: auto;
+	margin-bottom: 0;
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-top: 2px;
+	padding-bottom: 8px;
+	list-style-type: none;
+	color: #ffffff;
+	font-size: 20px;
+	text-align: left;
+	border-top: solid 6px #a5a5a545;
+	background-color: #ffffff15;
+}
+
+.total-list-element {
+	margin: 0;
+	padding: 2px 8px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.total-list-element-front,
+.total-list-element-price {
+	display: inline-flex;
+}
+
+
+.line-list {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	color: #ffffff;
+	font-size: 20px;
+	text-align: left;
+	max-height: 100%;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.line-list-header {
+	margin: 0;
+	padding: 8px;
+	border-bottom: solid 6px #a5a5a545;
+	background-color: #ffffff15;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.line-list-header-front {
+	display: inline-flex;
+	align-items: center;
+}
+
+.line-list-header-back {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.line-list-header-title-front,
+.line-list-header-title-back {
+	margin: 0;
+	display: block;
+	width: 100%;
+	color: #ffffff;
+	text-align: center;
+}
+
+.line-list-header-title-front {
+	font-size: 28px;
+}
+
+.line-list-header-title-back {
+	font-size: 28px;
+	margin: 0;
+	font-weight: 200;
+}
+
+.client-prev-btn,
+.client-next-btn {
+	display: inline-flex;
+	border-radius: 100px;
+	min-height: 30px;
+	min-width: 30px;
+	align-items: center;
+  	justify-content: center;
+  	background-color: #067bc2;
+}
+
+.client-prev-btn:active,
+.client-next-btn:active {
+	background-color: #3895ce;
+}
+
+.left-arrow-icon,
+.right-arrow-icon {
+	height: 30px;
+	width: 30px;
+	display: flex;
+	fill: #ffffff;
+}
+
+
+.line-list-element {
+	margin: 0;
+	padding: 8px;
+	border-bottom: solid 1px #a5a5a545;
+	display: flex;
+	justify-content: space-between;
+}
+
+.line-list-element:hover {
+	background-color: #363636;
+}
+
+.line-list-element:active {
+	background-color: #797979;
+}
+
+.line-list-element-active {
+	background-color: #797979;
+}
+
+.line-list-element-active:hover {
+	background-color: #797979;
+}
+
+.line-list-element-front,
+.line-list-element-price {
+	display: inline-flex;
+}
+
+.line-list-element-quantity {
+	padding-right: 8px;
+}

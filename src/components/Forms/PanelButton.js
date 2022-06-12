@@ -11,7 +11,7 @@ import { ReactComponent as DiscountIcon } from './assets/discountIcon.svg'
 import { ReactComponent as RemoveIcon } from './assets/removeIcon.svg'
 
 
-function PanelButton({ type, onClick }) {
+function PanelButton({ type, disabled=false, onClick }) {
 
 	switch(type) {
 		case 'print':
@@ -58,7 +58,7 @@ function PanelButton({ type, onClick }) {
 			)
 		case 'remove':
 			return (
-				<div className="remove-btn panel-btn" onClick={onClick}>
+				<div className={disabled ? "remove-btn-disabled panel-btn" : "remove-btn panel-btn"} onClick={onClick}>
 					<RemoveIcon className="panel-icon" /> Remove
 				</div>
 			)

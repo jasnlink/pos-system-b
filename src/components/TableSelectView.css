@@ -14,7 +14,7 @@
 }
 .tableview-left,
 .tableview-center {
-	border-right: solid #a5a5a545 1px;
+	border-right: solid #a5a5a545 3px;
 }
 
 
@@ -30,21 +30,21 @@
 	overflow: auto;
 }
 
-.table-list-item {
+.table-list-element {
 	margin: 0;
 	padding: 12px;
 	border-bottom: solid 1px #a5a5a545;
 }
 
-.table-list-item:hover {
+.table-list-element:hover {
 	background-color: #363636;
 }
 
-.table-list-item-active {
+.table-list-element-active {
 	background-color: #797979;
 }
 
-.table-list-item-active:hover {
+.table-list-element-active:hover {
 	background-color: #797979;
 }
 

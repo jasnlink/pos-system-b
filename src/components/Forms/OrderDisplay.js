@@ -43,7 +43,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 		<>
 		<div className="order-view">
 			<div className="line-list-header">
-			{!!select && (
+			{!!selectChange && (
 				<>
 					<div className="line-list-header-front">
 						<h1 className="line-list-header-title-front">
@@ -64,7 +64,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 					</div>
 				</>
 			)}
-			{!select && (
+			{!selectChange && (
 				<h1 className="line-list-header-title-front">
 					#{order.order_id}
 				</h1>
@@ -75,11 +75,11 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 				{order?.line_items?.map((line, index) => (
 				<>
 					<li
-						className={select ? (
+						className={selectChange ? (
 								select?.order_line_id === line.order_line_id ? "line-list-element line-list-element-active" : "line-list-element"
 							) : "line-list-element-disabled"} 
 						key={index}
-						onClick={select ? () => selectChange(line) : null}
+						onClick={selectChange ? () => selectChange(line) : null}
 					>
 						<div className="line-list-element-front">
 							<div className="line-list-element-quantity">

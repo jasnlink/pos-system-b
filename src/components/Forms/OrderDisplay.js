@@ -43,32 +43,43 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 		<>
 		<div className="order-view">
 			<div className="line-list-header">
-				<div className="line-list-header-front">
-					<h1 className="line-list-header-title-front">
-						Table #{table.table_number}
-					</h1>
-				</div>
-				<div className="line-list-header-back">
-					<div className="client-prev-btn">
-						<LeftArrowIcon className="left-arrow-icon" />
+			{!!select && (
+				<>
+					<div className="line-list-header-front">
+						<h1 className="line-list-header-title-front">
+							Table #{table.table_number}
+						</h1>
 					</div>
-					<h1 className="line-list-header-title-back">
-						Client #{client.client_number}
-					</h1>
-					<div className="client-prev-btn">
-						<RightArrowIcon className="right-arrow-icon" />
-					</div>
-				</div>
 				
+					<div className="line-list-header-back">
+						<div className="client-prev-btn">
+							<LeftArrowIcon className="left-arrow-icon" />
+						</div>
+						<h1 className="line-list-header-title-back">
+							Client #{client.client_number}
+						</h1>
+						<div className="client-prev-btn">
+							<RightArrowIcon className="right-arrow-icon" />
+						</div>
+					</div>
+				</>
+			)}
+			{!select && (
+				<h1 className="line-list-header-title-front">
+					#{order.order_id}
+				</h1>
+			)}	
 			</div>
 			<ul className="line-list">
 				
 				{order?.line_items?.map((line, index) => (
-
+				<>
 					<li
-						className={select?.order_line_id === line.order_line_id ? "line-list-element line-list-element-active" : "line-list-element"} 
+						className={select ? (
+								select?.order_line_id === line.order_line_id ? "line-list-element line-list-element-active" : "line-list-element"
+							) : "line-list-element-disabled"} 
 						key={index}
-						onClick={() => selectChange(line)}
+						onClick={select ? () => selectChange(line) : null}
 					>
 						<div className="line-list-element-front">
 							<div className="line-list-element-quantity">
@@ -82,7 +93,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 							{formatPrice(line.item_price)}
 						</div>
 					</li>
-
+				</>
 				))}
 			</ul>
 			<ul className="total-list">

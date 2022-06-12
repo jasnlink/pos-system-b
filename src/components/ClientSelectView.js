@@ -2,12 +2,18 @@ import React, { useState, useEffect } from 'react'
 
 import './ClientSelectView.css'
 
+
+import OrderDisplay from './Forms/OrderDisplay'
 import PanelButton from './Forms/PanelButton'
+
 
 function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedClient, setSelectedClient }) {
 
 	const [tables, setTables] = useState([])
 	const [clients, setClients] = useState([])
+
+	//order object
+	const [order, setOrder] = useState({})
 
 	useEffect(() => {
 
@@ -31,6 +37,7 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 
 					setClients(res)
 					setSelectedClient(res[0])
+					fetchOrder(selectedTable, res[0])
 
 				} else {
 					//if there are not clients associated yet
@@ -55,6 +62,20 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 
 	}, [])
 
+	function fetchOrder(table, client) {
+
+		window.api.call('fetch-order', {
+			tableId: table.table_id,
+			clientId: client.client_id
+		})
+		window.api.reply('fetch-order', (event, res) => {
+
+			console.log(res)
+			setOrder(res)
+
+		})
+	}
+
 	function handleSelectTable(table) {
 
 		setSelectedTable(table)
@@ -71,9 +92,15 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 		})
 	}
 
+	function handleSelectClient(client) {
+
+		setSelectedClient(client)
+		fetchOrder(selectedTable, client)
+
+	}
+
 	function handleGoBack() {
 		if(selectedClient) {
-			console.log(selectedClient)
 			return setSelectedClient()
 		}
 		setStep(10)
@@ -86,11 +113,11 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 				<div className="row text-center">
 					<div className="col-4 clientview-left p-0">
 						<div className="row p-0 gx-0">
-							<ul className="client-list">
-								<h1 className="display-6 display-title">
-									Client #{selectedClient?.client_number}
-								</h1>
-							</ul>
+							<OrderDisplay 
+								table={selectedTable}
+								client={selectedClient}
+								order={order}
+							/>
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
@@ -111,7 +138,7 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 									<li 
 										className={selectedClient?.client_id === client.client_id ? "client-list-element client-list-element-active" : "client-list-element"} 
 										key={index}
-										onClick={() => setSelectedClient(client)}
+										onClick={() => handleSelectClient(client)}
 									>
 										Client #{client.client_number}
 									</li>

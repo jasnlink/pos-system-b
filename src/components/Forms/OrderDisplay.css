@@ -113,7 +113,8 @@
 }
 
 
-.line-list-element {
+.line-list-element,
+.line-list-element-disabled {
 	margin: 0;
 	padding: 8px;
 	border-bottom: solid 1px #a5a5a545;

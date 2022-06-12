@@ -14,7 +14,7 @@
 }
 .clientview-left,
 .clientview-center {
-	border-right: solid #a5a5a545 1px;
+	border-right: solid #a5a5a545 3px;
 }
 
 
@@ -51,7 +51,7 @@
 .client-panel {
 	margin: 0;
 	padding: 2% 0;
-	border-top: solid 1px #a5a5a545;
+	border-top: solid 3px #a5a5a545;
 	color: #ffffff;
 	min-height: calc(12vh);
 	max-height: calc(12vh);

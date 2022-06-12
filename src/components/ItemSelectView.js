@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './ItemSelectView.css'
 
-import ConfirmButton from './Forms/ConfirmButton'
-import BackButton from './Forms/BackButton'
+import PanelButton from './Forms/PanelButton'
 
 function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedClient }) {
 
@@ -47,9 +46,15 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 
 	}
 
+	//formats price from cents to dollars
 	function formatPrice(price) {
 
-		return null
+		price = price.toString()
+
+		let dollars = price.slice(0, -2)
+		let cents = price.slice(-2, price.length)
+
+		return dollars + '.' + cents
 
 	}
 
@@ -67,7 +72,12 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
-
+								<PanelButton
+									type="discount"
+								/>
+								<PanelButton
+									type="remove"
+								/>
 							</div>
 						</div>
 					</div>
@@ -85,7 +95,7 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 											{item.item_name}
 										</div>
 										<div className="item-list-item-price">
-											$ {item.item_price}
+											$ {formatPrice(item.item_price)}
 										</div>
 									</li>
 
@@ -94,7 +104,13 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 						</div>
 						<div className="row gx-0">
 							<div className="item-panel">
-								<BackButton onClick={() => setStep(11)} />
+								<PanelButton
+									type="back"
+									onClick={() => setStep(11)}
+								/>
+								<PanelButton
+									type="split"
+								/>
 							</div>
 						</div>
 					</div>
@@ -116,7 +132,9 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 						</div>
 						<div className="row gx-0">
 							<div className="category-panel">
-
+								<PanelButton
+									type="payment"
+								/>
 							</div>
 						</div>
 					</div>

@@ -4,8 +4,7 @@ import './TableSelectView.css'
 
 import Keypad from './Forms/Keypad'
 import TableNumberDisplay from './Forms/TableNumberDisplay'
-import ConfirmButton from './Forms/ConfirmButton'
-import BackButton from './Forms/BackButton'
+import PanelButton from './Forms/PanelButton'
 
 
 function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
@@ -131,8 +130,14 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 							<div className="table-confirm-panel">
 							{selectedTableInList && (
 							<>
-								<BackButton onClick={() => setSelectedTableInList()} />
-								<ConfirmButton onClick={handleSelectTable} />
+								<PanelButton
+									type="back"
+									onClick={() => setSelectedTableInList()}
+								/>
+								<PanelButton
+									type="confirm"
+									onClick={handleSelectTable}
+								/>
 							</>
 							)}
 							</div>

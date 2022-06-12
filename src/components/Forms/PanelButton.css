@@ -1,0 +1,99 @@
+/* Universal style */
+.panel-btn {
+	display: inline-flex;
+	border-radius: 6px;
+	margin: 0 2%;
+	height: 100%;
+	width: 100%;
+	font-size: 36px;
+	font-weight: 600;
+	align-items: center;
+  	justify-content: center;
+  	gap: 2%;
+}
+
+.panel-icon {
+	height: 42px;
+	width: 42px;
+	display: flex;
+	fill: #ffffff;
+}
+/**********************/
+
+/* print */
+.print-btn {
+	background-color: #46a3a7;
+}
+.print-btn:active {
+	background-color: #5ad2d6;
+}
+/**********************/
+
+
+/* print all */
+.print-all-btn {
+	background-color: #327577;
+}
+.print-all-btn:active {
+	background-color: #46a3a7;
+}
+/**********************/
+
+
+/* confirm */
+.confirm-btn {
+	background-color: #009c29;
+}
+.confirm-btn:active {
+	background-color: #1ab542;
+}
+/**********************/
+
+
+/* back */
+.back-btn {
+	background-color: #dc602e;
+}
+.back-btn:active {
+	background-color: #e38058;
+}
+/**********************/
+
+
+/* split */
+.split-btn {
+	background-color: #F9A620;
+}
+.split-btn:active {
+	background-color: #fab84d;
+}
+/**********************/
+
+
+/* payment */
+.payment-btn {
+	background-color: #2c5bcc;
+}
+.payment-btn:active {
+	background-color: #3772ff;
+}
+/**********************/
+
+
+/* remove */
+.remove-btn {
+	background-color: #cf1208;
+}
+.remove-btn:active {
+	background-color: #eb433a;
+}
+/**********************/
+
+/* discount */
+.discount-btn {
+	background-color: #46a3a7;
+}
+.discount-btn:active {
+	background-color: #5ad2d6;
+}
+/**********************/

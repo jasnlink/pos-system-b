@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import './ClientSelectView.css'
 
-import ConfirmButton from './Forms/ConfirmButton'
-import BackButton from './Forms/BackButton'
-
+import PanelButton from './Forms/PanelButton'
 
 function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedClient, setSelectedClient }) {
 
@@ -96,7 +94,12 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
-
+								<PanelButton
+									type="print"
+								/>
+								<PanelButton
+									type="printAll"
+								/>
 							</div>
 						</div>
 					</div>
@@ -118,12 +121,17 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
-
-								<BackButton onClick={handleGoBack} />
+								<PanelButton
+									type="back"
+									onClick={handleGoBack}
+								/>
 
 							{selectedClient && (
 							<>
-								<ConfirmButton onClick={() => setStep(20)} />
+								<PanelButton
+									type="confirm"
+									onClick={() => setStep(20)}
+								/>
 							</>
 							)}
 							</div>
@@ -147,7 +155,14 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
-
+								<PanelButton
+									type="split"
+									
+								/>
+								<PanelButton
+									type="payment"
+									
+								/>
 							</div>
 						</div>
 					</div>

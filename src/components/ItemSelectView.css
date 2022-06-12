@@ -47,13 +47,15 @@
 	background-color: #363636;
 }
 
-.category-list-item-active,
-.item-list-item-active {
+.item-list-item:active {
 	background-color: #797979;
 }
 
-.category-list-item-active:hover,
-.item-list-item-active:hover {
+.category-list-item-active {
+	background-color: #797979;
+}
+
+.category-list-item-active:hover {
 	background-color: #797979;
 }
 

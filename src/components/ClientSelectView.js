@@ -8,6 +8,7 @@ import PanelButton from './Forms/PanelButton'
 
 
 function ClientSelectView({ 
+	timezone,
 	setStep, 
 	selectedTable, 
 	setSelectedTable, 
@@ -112,6 +113,7 @@ function ClientSelectView({
 		
 	}
 
+
 	return (
 
 		<div className="container-fluid clientview-main">
@@ -119,6 +121,7 @@ function ClientSelectView({
 					<div className="col-4 clientview-left p-0">
 						<div className="row p-0 gx-0">
 							<OrderDisplay 
+								timezone={timezone}
 								table={selectedTable}
 								client={selectedClient}
 								order={order}
@@ -191,7 +194,6 @@ function ClientSelectView({
 							<div className="client-panel">
 								<PanelButton
 									type="split"
-									
 								/>
 								<PanelButton
 									type="payment"

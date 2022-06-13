@@ -4,7 +4,7 @@ import './OrderDisplay.css'
 import { ReactComponent as LeftArrowIcon } from './assets/leftArrowIcon.svg'
 import { ReactComponent as RightArrowIcon } from './assets/rightArrowIcon.svg'
 
-function OrderDisplay({ table, client, order, select, selectChange }) {
+function OrderDisplay({ timezone, table, client, order, select, selectChange }) {
 
 
 	//formats price from cents to dollars
@@ -39,6 +39,15 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 
 	}
 
+	//formats datetime to local time
+	function formatDatetime(dateString) {
+
+		let formattedDate = new Date(dateString+' GMT')
+
+		return formattedDate.toLocaleString('en-US', { timeZone: timezone })
+
+	}
+
 	return (
 		<>
 		<div className="order-view">
@@ -65,6 +74,21 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 						</div>
 					</div>
 				</>
+			)}
+			{!selectChange && (
+				<>
+					<div className="line-list-header-front">
+						<h1 className="line-list-header-title-front">
+							Bill #{order.order_id}
+						</h1>
+					</div>
+					<div className="line-list-header-back">
+						<h1 className="line-list-header-title-back">
+							{formatDatetime(order.created_on)}
+						</h1>
+					</div>
+				</>
+
 			)}
 	
 			</div>
@@ -96,7 +120,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 			</ul>
 			<ul className="total-list">
 				<li
-					className="total-list-element"
+					className={selectChange ? "total-list-element" : "total-list-element-clientview"}
 				>
 					<div className="total-list-element-front">
 						<div className="total-list-element-name">
@@ -108,7 +132,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 					</div>
 				</li>
 				<li
-					className="total-list-element"
+					className={selectChange ? "total-list-element" : "total-list-element-clientview"}
 				>
 					<div className="total-list-element-front">
 						<div className="total-list-element-name">
@@ -120,7 +144,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 					</div>
 				</li>
 				<li
-					className="total-list-element"
+					className={selectChange ? "total-list-element" : "total-list-element-clientview"}
 				>
 					<div className="total-list-element-front">
 						<div className="total-list-element-name">
@@ -132,7 +156,7 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 					</div>
 				</li>
 				<li
-					className="total-list-element"
+					className={selectChange ? "total-list-element-grandtotal" : "total-list-element-clientview-grandtotal"}
 				>
 					<div className="total-list-element-front">
 						<div className="total-list-element-name">

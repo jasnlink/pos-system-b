@@ -5,6 +5,7 @@ import OrderDisplay from './Forms/OrderDisplay'
 import PanelButton from './Forms/PanelButton'
 
 function ItemSelectView({ 
+	timezone,
 	setStep, 
 	selectedTable, 
 	setSelectedTable,
@@ -67,6 +68,7 @@ function ItemSelectView({
 					window.api.call('close-table', {
 						tableId: selectedTable.table_id
 					})
+
 					setSelectedClient()
 					setSelectedTable()
 					setOrder()
@@ -182,6 +184,7 @@ function ItemSelectView({
 						{!!order && (
 
 							<OrderDisplay 
+								timezone={timezone}
 								table={selectedTable}
 								client={selectedClient}
 								order={order}

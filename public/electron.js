@@ -541,17 +541,17 @@ ipcMain.handle('remove-item-order', async (event, data) => {
 ********************************************************************************************************/
 
 //fetch 4 digit security pin FROM database
-ipcMain.handle('fetch-security-pin', async (event, data) => {
+ipcMain.handle('fetch-settings', async (event, data) => {
 
-  console.log('fetching security pin...')
+  console.log('fetching settings...')
 
-  const query = 'SELECT security_pin FROM pos_settings'
+  const query = 'SELECT * FROM pos_settings'
   database.get(query, function (err, row) {
     if (err) {
       return console.log(err)
     }
 
-    return mainWindow.webContents.send('fetch-security-pin', row)
+    return mainWindow.webContents.send('fetch-settings', row)
   })
 
 })

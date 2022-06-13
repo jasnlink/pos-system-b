@@ -14,6 +14,8 @@ function Core() {
 
 	//4 digit pin to access tablet
 	const [passcode, setPasscode] = useState()
+	//timezone setting from db
+	const [timezone, setTimezone] = useState()
 
 	//lists
 	const [tables, setTables] = useState([])
@@ -89,10 +91,11 @@ function Core() {
 	useEffect(() => {
 		
 		//fetch 4 digit security pin to access tablet
-		window.api.call('fetch-security-pin')
-		window.api.reply('fetch-security-pin', (event, res) => {
+		window.api.call('fetch-settings')
+		window.api.reply('fetch-settings', (event, res) => {
 
 			setPasscode(res.security_pin)
+			setTimezone(res.timezone)
 			setStep(1)
 			
 		})
@@ -144,6 +147,7 @@ function Core() {
 		    	<>
 		    		<HeaderBar date={date} time={time} />
 			    	<ClientSelectView
+			    		timezone={timezone}
 						setStep={step => setStep(step)}
 						selectedTable={selectedTable}
 						setSelectedTable={table => setSelectedTable(table)}
@@ -163,6 +167,7 @@ function Core() {
 		    	<>
 		    		<HeaderBar date={date} time={time} />
 			    	<ItemSelectView
+			    		timezone={timezone}
 						setStep={step => setStep(step)}
 						selectedTable={selectedTable}
 						setSelectedTable={table => setSelectedTable(table)}

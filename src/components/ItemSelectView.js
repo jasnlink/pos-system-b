@@ -1,22 +1,31 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './ItemSelectView.css'
 
 import OrderDisplay from './Forms/OrderDisplay'
 import PanelButton from './Forms/PanelButton'
 
-function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedClient, date, time }) {
+function ItemSelectView({ 
+	setStep, 
+	selectedTable, 
+	setSelectedTable,
+	selectedClient, 
+	setSelectedClient, 
+	clients,
+	categories, 
+	setCategories, 
+	items, 
+	setItems, 
+	order, 
+	setOrder 
+}) {
 
-	//list containing categories and items
-	const [categories, setCategories] =  useState([])
-	const [items, setItems] = useState([])
+	//use a ref to keep data fresh
+	const orderRef = useRef()
 
 	//tracks currently selected list items
 	const [selectedItemInList, setSelectedItemInList] = useState()
 	const [selectedCategoryInList, setSelectedCategoryInList] = useState()
 	const [selectedLineItemInList, setSelectedLineItemInList] = useState()
-
-	//order object
-	const [order, setOrder] = useState({})
 
 	useEffect(() => {
 
@@ -34,15 +43,59 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 			})
 			window.api.reply('fetch-order', (event, res) => {
 
-				console.log(res)
 				setOrder(res)
 
 			})
 
 		})
 
+		return () => {
+
+
+			console.log('ItemSelectView unmount...')
+
+			//if on exit, the order is empty
+			if (!orderRef.current || orderRef.current['line_items']?.length === 0) {
+
+				console.log('ItemSelectView unmount... order is empty...')
+
+				//if there is only 1 client, then close the table as well
+				if (clients.length <= 1) {
+					
+					console.log('ItemSelectView unmount... clients <= 1', clients)
+
+					window.api.call('close-table', {
+						tableId: selectedTable.table_id
+					})
+					setSelectedClient()
+					setSelectedTable()
+					setOrder()
+
+				} else {
+				//if there are more than 1 client, only close this client
+
+					console.log('ItemSelectView unmount... clients > 1', clients)
+
+					window.api.call('close-client', {
+						clientId: selectedClient.client_id
+					})
+
+					setSelectedClient()
+					setOrder()
+
+				}
+				
+			}
+
+		}
+
 	}, [])
 
+	useEffect(() => {
+
+		orderRef.current = { ...order }
+
+	}, [order])
 
 	function handleSelectCategory(category) {
 
@@ -143,6 +196,7 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 							<div className="client-panel">
 								<PanelButton
 									type="discount"
+									onClick={() => console.log('ItemSelectView Order...',order)}
 								/>
 								<PanelButton
 									type="remove"
@@ -179,9 +233,6 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 									type="back"
 									onClick={() => setStep(11)}
 								/>
-								<PanelButton
-									type="split"
-								/>
 							</div>
 						</div>
 					</div>
@@ -203,6 +254,9 @@ function ItemSelectView({ setStep, selectedTable, selectedClient, setSelectedCli
 						</div>
 						<div className="row gx-0">
 							<div className="category-panel">
+								<PanelButton
+									type="split"
+								/>
 								<PanelButton
 									type="payment"
 								/>

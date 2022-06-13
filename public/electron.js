@@ -9,6 +9,11 @@ const sqlite3 = require('sqlite3').verbose();
 
 const database = new sqlite3.cached.Database('./store.sqlite3', (err) => {
     if (err) console.error('Database opening error: ', err);
+
+    //activate foreign keys functionality
+    database.exec('PRAGMA foreign_keys = ON', (err) => {
+      if (err) console.error('Database opening error: ', err);
+    })
 });
 
 
@@ -152,6 +157,25 @@ ipcMain.handle('new-table-client', async (event, data) => {
 
 })
 
+//close selected client
+//SQLITE has been set up to cascade client deletion to related order
+//so just need to delete the client and the rest will delete
+ipcMain.handle('close-client', async (event, data) => {
+
+  const clientId = data.clientId
+
+  const query = 'DELETE FROM pos_clients WHERE client_id=?'
+  database.run(query, clientId, function (err) {
+    if (err) {
+      return console.log(err)
+    }
+
+    return console.log('closing client...', clientId)
+
+  })
+
+})
+
 
 /********************************************************************************************************
  * Tables
@@ -175,52 +199,77 @@ ipcMain.handle('list-table', async (event, data) => {
 
 //looks for table number in the database,
 //if it cant be found, then it creates a new table
-ipcMain.handle('fetch-table', async (event, data) => {
+ipcMain.handle('fetch-table-number', async (event, data) => {
 
-  const number = data.number
+  const tableNumber = data.tableNumber
 
-  console.log('fetching table by number...', number)
+  console.log('fetching table by number...', tableNumber)
 
-  const query = 'SELECT * FROM pos_tables WHERE table_number=? ORDER BY table_number ASC'
-  database.get(query, number, function (err, row) {
+  const query = 'SELECT * FROM pos_tables WHERE table_number=?'
+  database.get(query, tableNumber, function (err, row) {
     if (err) {
       return console.log(err)
     }
 
-    //found matching table, send table data over
-    if (row) {
-      return mainWindow.webContents.send('fetch-table', row)
+    return mainWindow.webContents.send('fetch-table-number', row)
+
+  })
+  
+})
+
+ipcMain.handle('new-table', async (event, data) => {
+
+  const tableNumber = data.tableNumber
+
+  console.log('creating new table with number...', tableNumber)
+
+  //create new table
+  const query = 'INSERT INTO pos_tables (table_number) VALUES (?)'
+  database.run(query, tableNumber, function (err) {
+    if (err) {
+      return console.log(err)
     }
 
-    //table not found, create new table
-    const query = 'INSERT INTO pos_tables (table_number) VALUES (?)'
-    database.run(query, number, function (err) {
+    //using this object because its the only way it works...
+    const lastInsertId = this.lastID
+    
+    console.log('fetching newly created table...', lastInsertId)
+
+    //table is created, fetch new table info
+    const query = 'SELECT * FROM pos_tables WHERE table_id=?'
+    database.get(query, lastInsertId, function (err, row) {
       if (err) {
         return console.log(err)
       }
 
-      //using this object because its the only way it works...
-      const lastInsertId = this.lastID
-      console.log('table not found, creating new table with id...', lastInsertId)
+      return mainWindow.webContents.send('new-table', row)
 
-
-      //table is created, fetch new table info
-      const query = 'SELECT * FROM pos_tables WHERE table_id=? ORDER BY table_number ASC'
-      database.get(query, lastInsertId, function (err, row) {
-        if (err) {
-          return console.log(err)
-        }
-
-        return mainWindow.webContents.send('fetch-table', row)
-
-      })
- 
     })
-     
+
   })
-  
-  
+
 })
+
+
+//close selected table
+//SQLITE has been set up to cascade table deletion to related client and order
+//so just need to delete the table and the rest will delete
+ipcMain.handle('close-table', async (event, data) => {
+
+  const tableId = data.tableId
+
+  const query = 'DELETE FROM pos_tables WHERE table_id=?'
+  database.run(query, tableId, function (err) {
+    if (err) {
+      return console.log(err)
+    }
+
+    return console.log('closing table...', tableId)
+
+  })
+
+})
+
 
 /********************************************************************************************************
  * Categories
@@ -417,7 +466,7 @@ ipcMain.handle('remove-item-order', async (event, data) => {
   const orderId = data.orderId
   const line = data.line
 
-  console.log('removing item into order...', orderId)
+  console.log('removing item from order...', orderId)
 
   //insert new order line
   const query = 'DELETE FROM pos_order_lines WHERE order_line_id=?'

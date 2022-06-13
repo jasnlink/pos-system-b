@@ -7,17 +7,15 @@ import TableNumberDisplay from './Forms/TableNumberDisplay'
 import PanelButton from './Forms/PanelButton'
 
 
-function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
+function TableSelectView({ setStep, setSelectedClient, selectedTable, setSelectedTable, tables, setTables }) {
 
-	//list of tables
-	const [tables, setTables] = useState([])
 	//selected table, but only in the list, not confirmed yet
 	const [selectedTableInList, setSelectedTableInList] = useState()
 
 	useEffect(() => {
 
 		//initialization
-
+	
 		//fetch all open tables
 		window.api.call('list-table')
 		window.api.reply('list-table', (event, res) => {
@@ -25,6 +23,7 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 			setTables(res)
 			
 		})
+		
 
 	}, [])
 
@@ -63,25 +62,7 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 				return
 			}
 
-			//fetch entered table
-			window.api.call('fetch-table', {
-				number: parseInt(tableInputDisplay),
-			})
-			window.api.reply('fetch-table', (event, res) => {
-
-				setSelectedTable(res)
-
-				//fetch all open tables
-				window.api.call('list-table')
-				window.api.reply('list-table', (event, res) => {
-
-					setTables(res)
-					setStep(11)
-
-				})
-			})
-
-			setTableInputDisplay('')
+			handleConfirmTable(tableInputDisplay)
 
 		}
 
@@ -89,14 +70,54 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 		
 	}
 
-	function handleSelectTable() {
+	function handleConfirmTable(tableNumber) {
 
-		const table = selectedTableInList
 
-		setTableInputDisplay('')
-		setSelectedTable(table)
-		setSelectedTableInList()
-		setStep(11)
+		//fetch entered table
+		window.api.call('fetch-table-number', {
+			tableNumber: parseInt(tableNumber),
+		})
+		window.api.reply('fetch-table-number', (event, res) => {
+
+			//found table, set and move to client select
+			if (res !== undefined) {
+
+				setSelectedTableInList()
+				setTableInputDisplay('')
+
+				setSelectedTable(res)
+				setStep(11) //to client select
+
+			//table not found, create it, 
+			//create first client and move to item select
+			} else if (res === undefined) {
+
+				window.api.call('new-table', {
+					tableNumber: parseInt(tableNumber),
+				})
+				window.api.reply('new-table', (event, res) => {
+
+					
+					setSelectedTableInList()
+					setTableInputDisplay('')
+
+					setSelectedTable(res)
+
+					//create first client in table
+					window.api.call('new-table-client', {
+						tableId: res.table_id,
+					})
+					window.api.reply('new-table-client', (event, res) => {
+
+						setSelectedClient(res)
+						setStep(20) //to item select
+
+					})
+
+				})
+
+			}
+		})
 
 	}
 
@@ -136,7 +157,7 @@ function TableSelectView({ setStep, selectedTable, setSelectedTable }) {
 								/>
 								<PanelButton
 									type="confirm"
-									onClick={handleSelectTable}
+									onClick={() => handleConfirmTable(selectedTableInList.table_number)}
 								/>
 							</>
 							)}

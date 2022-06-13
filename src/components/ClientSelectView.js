@@ -7,13 +7,19 @@ import OrderDisplay from './Forms/OrderDisplay'
 import PanelButton from './Forms/PanelButton'
 
 
-function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedClient, setSelectedClient }) {
-
-	const [tables, setTables] = useState([])
-	const [clients, setClients] = useState([])
-
-	//order object
-	const [order, setOrder] = useState({})
+function ClientSelectView({ 
+	setStep, 
+	selectedTable, 
+	setSelectedTable, 
+	selectedClient, 
+	setSelectedClient,
+	clients,
+	setClients,
+	tables,
+	setTables,
+	order,
+	setOrder
+ }) {
 
 	useEffect(() => {
 
@@ -25,40 +31,38 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 
 			setTables(res)
 
-			//fetch all clients in selected table
-			window.api.call('list-client', {
-				tableId: selectedTable.table_id,
-			})
-			window.api.reply('list-client', (event, res) => {
+			if(res.length) {
 
-				//if there are clients associated with the table
-				//then it is an existing table
-				if (res.length) {
+				//fetch all clients in selected table
+				window.api.call('list-client', {
+					tableId: selectedTable.table_id,
+				})
+				window.api.reply('list-client', (event, res) => {
 
 					setClients(res)
-					setSelectedClient(res[0])
-					fetchOrder(selectedTable, res[0])
 
-				} else {
-					//if there are not clients associated yet
-					//with the table then it is a new table
-					//we then move one straight to creating the first client
-					//and they can start adding items to the order
+					if(res.length) {
 
-					//fetch all clients in selected table
-					window.api.call('new-table-client', {
-						tableId: selectedTable.table_id,
-					})
-					window.api.reply('new-table-client', (event, res) => {
-						setSelectedClient(res)
-						setStep(20)
-					})
+						setSelectedClient(res[0])
+						fetchOrder(selectedTable, res[0])
 
-				}
+					} else {
 
-			})
+						setSelectedClient()
+
+					}
+						
+				})
+
+			//no open tables, go back to table select
+			} else {
+
+				handleGoBack()
+
+			}
 			
 		})
+
 
 	}, [])
 
@@ -70,7 +74,6 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 		})
 		window.api.reply('fetch-order', (event, res) => {
 
-			console.log(res)
 			setOrder(res)
 
 		})
@@ -88,6 +91,7 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 
 			setClients(res)
 			setSelectedClient(res[0])
+			fetchOrder(table, res[0])
 
 		})
 	}
@@ -100,10 +104,11 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 	}
 
 	function handleGoBack() {
-		if(selectedClient) {
-			return setSelectedClient()
-		}
-		setStep(10)
+
+		setSelectedTable()
+		setSelectedClient()
+		setOrder()
+		setStep(10) //to table select view
 		
 	}
 
@@ -123,9 +128,11 @@ function ClientSelectView({ setStep, selectedTable, setSelectedTable, selectedCl
 							<div className="client-panel">
 								<PanelButton
 									type="print"
+									onClick={() => console.log('ClientSelectView Order...', order)}
 								/>
 								<PanelButton
 									type="printAll"
+									onClick={() => console.log('ClientSelectView clients...', clients)}
 								/>
 							</div>
 						</div>

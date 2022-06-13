@@ -42,6 +42,8 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 	return (
 		<>
 		<div className="order-view">
+		{!!order && (
+		<>
 			<div className="line-list-header">
 			{!!selectChange && (
 				<>
@@ -142,7 +144,8 @@ function OrderDisplay({ table, client, order, select, selectChange }) {
 					</div>
 				</li>
 			</ul>
-				
+		</>
+		)}	
 		</div>
 		</>
 	)

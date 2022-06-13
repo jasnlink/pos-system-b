@@ -15,12 +15,24 @@ function Core() {
 	//4 digit pin to access tablet
 	const [passcode, setPasscode] = useState()
 
+	//lists
+	const [tables, setTables] = useState([])
+	const [clients, setClients] = useState([])
+
 	//tracks currently selected table
 	const [selectedTable, setSelectedTable] = useState()
-
 	//tracks currently selected client
 	const [selectedClient, setSelectedClient] = useState()
 
+	//current order object
+	const [order, setOrder] = useState({})
+
+
+	//list containing categories and items
+	const [categories, setCategories] =  useState([])
+	const [items, setItems] = useState([])
+
+	
 	//keep track of current date
 	const [date, setDate] = useState('')
 	//keep track of current time
@@ -119,8 +131,11 @@ function Core() {
 		    		<HeaderBar date={date} time={time} />
 			    	<TableSelectView
 						setStep={step => setStep(step)}
+						setSelectedClient={client => setSelectedClient(client)}
 						selectedTable={selectedTable}
 						setSelectedTable={table => setSelectedTable(table)}
+						tables={tables}
+						setTables={tables => setTables(tables)}
 					/>
 				</>
 		      )
@@ -134,6 +149,12 @@ function Core() {
 						setSelectedTable={table => setSelectedTable(table)}
 						selectedClient={selectedClient}
 						setSelectedClient={client => setSelectedClient(client)}
+						clients={clients}
+						setClients={clients => setClients(clients)}
+						tables={tables}
+						setTables={tables => setTables(tables)}
+						order={order}
+						setOrder={ord => setOrder(ord)}
 					/>
 				</>
 		      )
@@ -144,8 +165,17 @@ function Core() {
 			    	<ItemSelectView
 						setStep={step => setStep(step)}
 						selectedTable={selectedTable}
+						setSelectedTable={table => setSelectedTable(table)}
 						selectedClient={selectedClient}
 						setSelectedClient={client => setSelectedClient(client)}
+						clients={clients}
+						categories={categories}
+						setCategories={categories => setCategories(categories)}
+						items={items}
+						setItems={items => setItems(items)}
+						order={order}
+						setOrder={ord => setOrder(ord)}
+
 					/>
 				</>
 		      )

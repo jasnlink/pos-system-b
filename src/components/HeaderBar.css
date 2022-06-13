@@ -1,23 +1,37 @@
 .headerbar-main {
+	display: flex;
+	justify-content: space-between;
 	padding: 8px 0;
 	height: 48px;
+}
+
+.headerbar-item {
+	display: flex;
+	justify-content: center;
+}
+
+.headerbar-item-time {
+	display: flex;
+	position: absolute;
 }
 
 .date-display {
 	color: #ffffff;
 	font-weight: 300;
+	margin-left: 32px;
+	margin-right: 100px;
 }
 
 .time-display {
 	color: #ffffff;
 	font-weight: 400;
-	margin-right: -64px;
+
 }
 
 .second,
 .minute,
 .hour {
-	display: inline-block;
+	display: inline-flex;
 	margin-right: 2px;
 }
 

@@ -52,6 +52,8 @@ function ItemSelectView({
 
 		return () => {
 
+			setCategories([])
+			setItems([])
 
 			console.log('ItemSelectView unmount...')
 
@@ -158,6 +160,13 @@ function ItemSelectView({
 
 			setOrder(res)
 
+			if (res['line_items']?.length) {
+				setSelectedLineItemInList(res['line_items'][res['line_items'].length-1])
+			} else {
+				setSelectedLineItemInList()
+			}
+			
+
 		})
 	}
 
@@ -169,8 +178,13 @@ function ItemSelectView({
 		})
 		window.api.reply('remove-item-order', (event, res) => {
 
-			setSelectedLineItemInList()
 			setOrder(res)
+			
+			if (res['line_items']?.length) {
+				setSelectedLineItemInList(res['line_items'][res['line_items'].length-1])
+			} else {
+				setSelectedLineItemInList()
+			}
 
 		})
 	}

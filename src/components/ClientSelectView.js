@@ -97,10 +97,19 @@ function ClientSelectView({
 		})
 	}
 
-	function handleSelectClient(client) {
+	function handleSelectClient(e, client) {
 
-		setSelectedClient(client)
-		fetchOrder(selectedTable, client)
+		switch(e.detail) {
+			case 1:
+				setSelectedClient(client)
+				fetchOrder(selectedTable, client)
+				break;
+			case 2:
+				setSelectedClient(client)
+				fetchOrder(selectedTable, client)
+				setStep(20) //to item select view
+				break;
+		}
 
 	}
 
@@ -148,7 +157,7 @@ function ClientSelectView({
 									<li 
 										className={selectedClient?.client_id === client.client_id ? "client-list-element client-list-element-active" : "client-list-element"} 
 										key={index}
-										onClick={() => handleSelectClient(client)}
+										onClick={(e) => handleSelectClient(e, client)}
 									>
 										Client #{client.client_number}
 									</li>

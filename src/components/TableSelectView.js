@@ -70,6 +70,7 @@ function TableSelectView({ setStep, setSelectedClient, selectedTable, setSelecte
 		
 	}
 
+	//confirms table selection
 	function handleConfirmTable(tableNumber) {
 
 
@@ -121,6 +122,21 @@ function TableSelectView({ setStep, setSelectedClient, selectedTable, setSelecte
 
 	}
 
+	//handles selection in the table list
+	function handleSelectTable(e, table) {
+
+		switch(e.detail) {
+			case 1:
+				setSelectedTableInList(table)
+				break;
+			case 2:
+				setSelectedTableInList(table)
+				handleConfirmTable(table.table_number)
+				break;
+		}
+
+	}
+
 
 	return (
 
@@ -139,7 +155,7 @@ function TableSelectView({ setStep, setSelectedClient, selectedTable, setSelecte
 									<li 
 										className={selectedTableInList?.table_id === table.table_id ? "table-list-element table-list-element-active" : "table-list-element"} 
 										key={index}
-										onClick={() => setSelectedTableInList(table)}
+										onClick={(e) => handleSelectTable(e, table)}
 									>
 										Table #{table.table_number}
 									</li>

@@ -7,7 +7,7 @@ import TableNumberDisplay from './Forms/TableNumberDisplay'
 import PanelButton from './Forms/PanelButton'
 
 
-function TableSelectView({ setStep, setSelectedClient, selectedTable, setSelectedTable, tables, setTables }) {
+function TableSelectView({ setStep, clients, setClients, setSelectedClient, selectedTable, setSelectedTable, tables, setTables }) {
 
 	//selected table, but only in the list, not confirmed yet
 	const [selectedTableInList, setSelectedTableInList] = useState()
@@ -109,6 +109,10 @@ function TableSelectView({ setStep, setSelectedClient, selectedTable, setSelecte
 						tableId: res.table_id,
 					})
 					window.api.reply('new-table-client', (event, res) => {
+
+						let content = []
+						content.push(res)
+						setClients(content)
 
 						setSelectedClient(res)
 						setStep(20) //to item select

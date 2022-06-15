@@ -162,7 +162,10 @@ ipcMain.handle('new-table-client', async (event, data) => {
 //so just need to delete the client and the rest will delete
 ipcMain.handle('close-client', async (event, data) => {
 
+  const tableId = data.tableId
   const clientId = data.clientId
+
+  console.log('closing client...', clientId)
 
   const query = 'DELETE FROM pos_clients WHERE client_id=?'
   database.run(query, clientId, function (err) {
@@ -170,7 +173,134 @@ ipcMain.handle('close-client', async (event, data) => {
       return console.log(err)
     }
 
-    return console.log('closing client...', clientId)
+    console.log('fetching updated client list...')
+
+    const query = 'SELECT * FROM pos_clients WHERE table_id=? ORDER BY client_number ASC'
+    database.all(query, tableId, function (err, rows) {
+      if (err) {
+        return console.log(err)
+      }
+        return mainWindow.webContents.send('close-client', rows)
+    })
+
+  })
+
+})
+
+//finds or creates the prev client in the list
+ipcMain.handle('prev-table-client', async (event, data) => {
+
+  const tableId = data.tableId
+  const clientNumber = data.clientNumber
+
+  console.log('fetching next client in table...', tableId)
+
+  const query = 'SELECT * FROM pos_clients WHERE table_id=? AND client_number=?'
+  database.get(query, [tableId, clientNumber-1], function (err, row) {
+    if (err) {
+      return console.log(err)
+    }
+
+    //clients found, send back client object
+    if (row !== undefined) {
+
+      console.log('client found...')
+
+      const query = 'SELECT * FROM pos_clients WHERE table_id=? ORDER BY client_number ASC'
+      database.all(query, tableId, function (err, rows) {
+        if (err) {
+          return console.log(err)
+        }
+
+        return mainWindow.webContents.send('prev-table-client', rows)
+
+      })
+    //client not found, create new client
+    } else if (row === undefined) {
+
+      console.log('client not found, creating new client...')
+
+      const query = 'INSERT INTO pos_clients (client_number, table_id) VALUES (?, ?)'
+      database.run(query, [clientNumber-1, tableId], function (err) {
+        if (err) {
+          return console.log(err)
+        }
+
+
+        const query = 'SELECT * FROM pos_clients WHERE table_id=? ORDER BY client_number ASC'
+        database.all(query, tableId, function (err, rows) {
+          if (err) {
+            return console.log(err)
+          }
+      
+          return mainWindow.webContents.send('prev-table-client', rows)
+
+        })
+
+      })
+
+    }
+
+
+  })
+
+})
+
+
+//finds or creates the next client in the list
+ipcMain.handle('next-table-client', async (event, data) => {
+
+  const tableId = data.tableId
+  const clientNumber = data.clientNumber
+
+  console.log('fetching next client in table...', tableId)
+
+  const query = 'SELECT * FROM pos_clients WHERE table_id=? AND client_number=?'
+  database.get(query, [tableId, clientNumber+1], function (err, row) {
+    if (err) {
+      return console.log(err)
+    }
+
+    //clients found, send back client object
+    if (row !== undefined) {
+
+      console.log('client found...')
+
+      const query = 'SELECT * FROM pos_clients WHERE table_id=? ORDER BY client_number ASC'
+      database.all(query, tableId, function (err, rows) {
+        if (err) {
+          return console.log(err)
+        }
+
+        return mainWindow.webContents.send('next-table-client', rows)
+
+      })
+    //client not found, create new client
+    } else if (row === undefined) {
+
+      console.log('client not found, creating new client...')
+
+      const query = 'INSERT INTO pos_clients (client_number, table_id) VALUES (?, ?)'
+      database.run(query, [clientNumber+1, tableId], function (err) {
+        if (err) {
+          return console.log(err)
+        }
+
+
+        const query = 'SELECT * FROM pos_clients WHERE table_id=? ORDER BY client_number ASC'
+        database.all(query, tableId, function (err, rows) {
+          if (err) {
+            return console.log(err)
+          }
+      
+          return mainWindow.webContents.send('next-table-client', rows)
+
+        })
+
+      })
+
+    }
+
 
   })
 
@@ -333,7 +463,7 @@ ipcMain.handle('fetch-order', async (event, data) => {
     let order;
 
     //order found, fetch line items
-    if(row) {
+    if(row !== undefined) {
 
       order = row
 

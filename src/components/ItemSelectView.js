@@ -12,6 +12,7 @@ function ItemSelectView({
 	selectedClient, 
 	setSelectedClient, 
 	clients,
+	setClients,
 	categories, 
 	setCategories, 
 	items, 
@@ -55,17 +56,13 @@ function ItemSelectView({
 			setCategories([])
 			setItems([])
 
-			console.log('ItemSelectView unmount...')
-
 			//if on exit, the order is empty
 			if (!orderRef.current || orderRef.current['line_items']?.length === 0) {
 
-				console.log('ItemSelectView unmount... order is empty...')
 
 				//if there is only 1 client, then close the table as well
 				if (clients.length <= 1) {
 					
-					console.log('ItemSelectView unmount... clients <= 1', clients)
 
 					window.api.call('close-table', {
 						tableId: selectedTable.table_id
@@ -78,10 +75,10 @@ function ItemSelectView({
 				} else {
 				//if there are more than 1 client, only close this client
 
-					console.log('ItemSelectView unmount... clients > 1', clients)
 
 					window.api.call('close-client', {
-						clientId: selectedClient.client_id
+						tableId: selectedTable.table_id,
+						clientId: orderRef.current.client_id
 					})
 
 					setSelectedClient()
@@ -95,11 +92,13 @@ function ItemSelectView({
 
 	}, [])
 
+	//keep track of order changes and push into useref to get fresh data
 	useEffect(() => {
 
 		orderRef.current = { ...order }
 
 	}, [order])
+
 
 	function handleSelectCategory(category) {
 
@@ -150,6 +149,7 @@ function ItemSelectView({
 
 	}
 
+	//adds selected item to order
 	function handleAddItem(item) {
 
 		window.api.call('add-item-order', {
@@ -160,6 +160,7 @@ function ItemSelectView({
 
 			setOrder(res)
 
+			//select last item in order list
 			if (res['line_items']?.length) {
 				setSelectedLineItemInList(res['line_items'][res['line_items'].length-1])
 			} else {
@@ -170,6 +171,7 @@ function ItemSelectView({
 		})
 	}
 
+	//remove selected item from order
 	function handleRemoveItem() {
 
 		window.api.call('remove-item-order', {
@@ -180,6 +182,7 @@ function ItemSelectView({
 
 			setOrder(res)
 			
+			//select last item in order list
 			if (res['line_items']?.length) {
 				setSelectedLineItemInList(res['line_items'][res['line_items'].length-1])
 			} else {
@@ -199,9 +202,13 @@ function ItemSelectView({
 
 							<OrderDisplay 
 								timezone={timezone}
-								table={selectedTable}
-								client={selectedClient}
+								selectedTable={selectedTable}
+								selectedClient={selectedClient}
+								setSelectedClient={client => setSelectedClient(client)}
+								clients={clients}
+								setClients={clients => setClients(clients)}
 								order={order}
+								setOrder={order => setOrder(order)}
 								select={selectedLineItemInList}
 								selectChange={sel => setSelectedLineItemInList(sel)}
 							/>
@@ -213,7 +220,7 @@ function ItemSelectView({
 							<div className="client-panel">
 								<PanelButton
 									type="discount"
-									onClick={() => console.log('ItemSelectView Order...',order)}
+									onClick={() => console.log('ItemSelectView clients...',clients)}
 								/>
 								<PanelButton
 									type="remove"
@@ -273,6 +280,7 @@ function ItemSelectView({
 							<div className="category-panel">
 								<PanelButton
 									type="split"
+									onClick={() => console.log('ItemSelectView orderRef.current...', orderRef.current)}
 								/>
 								<PanelButton
 									type="payment"

@@ -134,6 +134,8 @@ function Core() {
 		    		<HeaderBar date={date} time={time} />
 			    	<TableSelectView
 						setStep={step => setStep(step)}
+						clients={clients}
+						setClients={clients => setClients(clients)}
 						setSelectedClient={client => setSelectedClient(client)}
 						selectedTable={selectedTable}
 						setSelectedTable={table => setSelectedTable(table)}
@@ -174,6 +176,7 @@ function Core() {
 						selectedClient={selectedClient}
 						setSelectedClient={client => setSelectedClient(client)}
 						clients={clients}
+						setClients={clients => setClients(clients)}
 						categories={categories}
 						setCategories={categories => setCategories(categories)}
 						items={items}

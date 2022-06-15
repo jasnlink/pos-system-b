@@ -131,9 +131,13 @@ function ClientSelectView({
 						<div className="row p-0 gx-0">
 							<OrderDisplay 
 								timezone={timezone}
-								table={selectedTable}
-								client={selectedClient}
+								selectedTable={selectedTable}
+								selectedClient={selectedClient}
+								setSelectedClient={client => setSelectedClient(client)}
+								clients={clients}
+								setClients={clients => setClients(clients)}
 								order={order}
+								setOrder={order => setOrder(order)}
 							/>
 						</div>
 						<div className="row gx-0">
@@ -152,17 +156,22 @@ function ClientSelectView({
 					<div className="col-4 clientview-center p-0">
 						<div className="row p-0 gx-0">
 							<ul className="client-list">
-								{clients?.map((client, index) => (
+								{clients && (
+									<>
+									{clients.map((client, index) => (
 
-									<li 
-										className={selectedClient?.client_id === client.client_id ? "client-list-element client-list-element-active" : "client-list-element"} 
-										key={index}
-										onClick={(e) => handleSelectClient(e, client)}
-									>
-										Client #{client.client_number}
-									</li>
+										<li 
+											className={selectedClient?.client_id === client.client_id ? "client-list-element client-list-element-active" : "client-list-element"} 
+											key={index}
+											onClick={(e) => handleSelectClient(e, client)}
+										>
+											Client #{client.client_number}
+										</li>
 
-								))}
+									))}
+									</>
+								)}
+								
 							</ul>
 						</div>
 						<div className="row gx-0">

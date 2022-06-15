@@ -124,6 +124,21 @@
 	background-color: #3895ce;
 }
 
+.client-prev-btn-disabled,
+.client-next-btn-disabled {
+
+	display: inline-flex;
+	border-radius: 100px;
+	min-height: 30px;
+	min-width: 30px;
+	align-items: center;
+  	justify-content: center;
+	pointer-events: none;
+	color: #ffffff80;
+	background-color: #067bc280
+
+}
+
 .left-arrow-icon,
 .right-arrow-icon {
 	height: 30px;

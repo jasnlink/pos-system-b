@@ -54,8 +54,9 @@ function OrderDisplay({
 		//it is used to select the next or previous client in the list
 		const currentClientListIndex = clients.findIndex(element => element.client_id === selectedClient.client_id)
 		const currentOrder = order
+		const currentClientListLength = clients.length
 
-		console.log('currentOrder', currentOrder)
+		console.log('#############################NEW OPERATION currentOrder...', currentOrder)
 
 		if (direction === 'next') {
 
@@ -66,10 +67,12 @@ function OrderDisplay({
 			})
 			window.api.reply('next-table-client', (event, res) => {
 
+				console.log('##NEXT, updated client list...', res)
 				//populate list and select next client
 				setClients(res)
 				setSelectedClient(res[currentClientListIndex+1])
 
+				console.log('newClient...',res[currentClientListIndex+1])
 
 				//fetch or create corresponding order
 				window.api.call('fetch-order', {
@@ -79,9 +82,14 @@ function OrderDisplay({
 				window.api.reply('fetch-order', (event, res) => {
 
 					setOrder(res)
+					console.log('newOrder...', res)
+
+					console.log("currentOrder['line_items']", currentOrder['line_items'])
 
 					//cleanup current client order, if its empty then close it
 					if (currentOrder['line_items'].length === 0) {
+
+
 
 						window.api.call('close-client', {
 							tableId: selectedTable.table_id,
@@ -89,8 +97,12 @@ function OrderDisplay({
 						})
 						window.api.reply('close-client', (event, res) => {
 							
+							console.log('closing client order', currentOrder)
+							console.log('closing currentOrder with client...',clients[currentClientListIndex])
+
 							setClients(res)
 							setSelectedClient(res[currentClientListIndex])
+
 
 						})
 
@@ -109,57 +121,61 @@ function OrderDisplay({
 			})
 			window.api.reply('prev-table-client', (event, res) => {
 
+				console.log('##PREV, updated client list...', res)
 				//populate list and select next client
 				setClients(res)
-				console.log('res...',res)
 
-				if (currentClientListIndex === 0) {
-
-					console.log('res[currentClientListIndex]',res[currentClientListIndex])
-					setSelectedClient(res[currentClientListIndex])
-
-				}
-				else {
-
-					console.log('res[currentClientListIndex-1]',res[currentClientListIndex-1])
-					setSelectedClient(res[currentClientListIndex-1])
-
-				}
-				
-				//fetch or create corresponding order
-				window.api.call('fetch-order', {
-					tableId: selectedTable.table_id,
-					clientId: res[currentClientListIndex-1].client_id
-				})
+					if (currentClientListLength === res.length) {
+						setSelectedClient(res[currentClientListIndex-1])
+						console.log('newClient...',res[currentClientListIndex-1])
+						//fetch or create corresponding order
+						window.api.call('fetch-order', {
+							tableId: selectedTable.table_id,
+							clientId: res[currentClientListIndex-1].client_id
+						})
+					} else if (currentClientListLength < res.length) {
+						setSelectedClient(res[currentClientListIndex])
+						console.log('newClient...',res[currentClientListIndex])
+						//fetch or create corresponding order
+						window.api.call('fetch-order', {
+							tableId: selectedTable.table_id,
+							clientId: res[currentClientListIndex].client_id
+						})
+					}
+					
 				window.api.reply('fetch-order', (event, res) => {
 
 					setOrder(res)
+					console.log('newOrder...', res)
+
+					console.log("currentOrder['line_items']", currentOrder['line_items'])
 
 					//cleanup current client order, if its empty then close it
 					if (currentOrder['line_items'].length === 0) {
-						console.log('closing client order...',order)
-						window.api.call('close-client', {
-							tableId: selectedTable.table_id,
-							clientId: clients[currentClientListIndex].client_id
-						})
+						console.log('yesssss')
+						if (currentClientListLength === clients.length) {
+
+							window.api.call('close-client', {
+								tableId: selectedTable.table_id,
+								clientId: clients[currentClientListIndex].client_id
+							})
+
+
+						} else if (currentClientListLength < clients.length) { 
+
+							window.api.call('close-client', {
+								tableId: selectedTable.table_id,
+								clientId: clients[currentClientListIndex].client_id
+							})
+
+						}
+						
 						window.api.reply('close-client', (event, res) => {
 
-							if (currentClientListIndex === 0) {
+							console.log('closing client order...',currentOrder)
+							console.log('closing currentOrder with client...',clients[currentClientListIndex])
 
-								console.log('close-client res...',res)
-								console.log('close-client res[currentClientListIndex]...',res[currentClientListIndex])
 								setClients(res)
-								setSelectedClient(res[currentClientListIndex])
-
-
-							} else {
-
-								console.log('close-client res...',res)
-								console.log('close-client res[currentClientListIndex-1]...',res[currentClientListIndex-1])
-								setClients(res)
-								setSelectedClient(res[currentClientListIndex-1])
-
-							}
 
 						})
 

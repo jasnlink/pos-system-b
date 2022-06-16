@@ -284,6 +284,7 @@ function ItemSelectView({
 								/>
 								<PanelButton
 									type="payment"
+									onClick={() => console.log('ItemSelectView selectedClient...', selectedClient)}
 								/>
 							</div>
 						</div>

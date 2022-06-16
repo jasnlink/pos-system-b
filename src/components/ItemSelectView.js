@@ -33,12 +33,13 @@ function ItemSelectView({
 
 		//initialization
 
-		//fetch all open tables
+		//fetch all catgories and populate list
 		window.api.call('list-category')
 		window.api.reply('list-category', (event, res) => {
 
 			setCategories(res)
 
+			//fetch or create order for the current client and table
 			window.api.call('fetch-order', {
 				tableId: selectedTable.table_id,
 				clientId: selectedClient.client_id
@@ -51,19 +52,20 @@ function ItemSelectView({
 
 		})
 
+		//on component unmount functions
 		return () => {
 
+			//empty lists
 			setCategories([])
 			setItems([])
 
-			//if on exit, the order is empty
-			if (!orderRef.current || orderRef.current['line_items']?.length === 0) {
-
+			//check on exit, if the order is empty
+			//so we can know it need to cleanup by closing the table or the client
+			if (orderRef.current['line_items'].length === 0) {
 
 				//if there is only 1 client, then close the table as well
 				if (clients.length <= 1) {
 					
-
 					window.api.call('close-table', {
 						tableId: selectedTable.table_id
 					})
@@ -73,8 +75,7 @@ function ItemSelectView({
 					setOrder()
 
 				} else {
-				//if there are more than 1 client, only close this client
-
+				//if there are more than 1 client remaining, only close this client
 
 					window.api.call('close-client', {
 						tableId: selectedTable.table_id,
@@ -99,7 +100,7 @@ function ItemSelectView({
 
 	}, [order])
 
-
+	//handles selection in category list
 	function handleSelectCategory(category) {
 
 		setSelectedItemInList()

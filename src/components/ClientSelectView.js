@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import './ClientSelectView.css'
 
@@ -22,35 +22,69 @@ function ClientSelectView({
 	setOrder
  }) {
 
+	const selectedTableRef = useRef()
+	const selectedClientRef = useRef()
+
 	useEffect(() => {
 
 		//initialization
+		let assignedSelectedTable
 
-		//fetch all open tables
+		//fetch all open tables and populate table list
 		window.api.call('list-table')
 		window.api.reply('list-table', (event, res) => {
 
 			setTables(res)
 
+			//must check if we actually have open tables,
+			//if we dont then we send user back to tableview
 			if(res.length) {
 
-				//fetch all clients in selected table
-				window.api.call('list-client', {
-					tableId: selectedTable.table_id,
-				})
+				//must check if we have already have a selected table
+				//if we dont then the last table was closed, we select the first one on the list for the user
+				if (Object.keys(selectedTableRef.current).length === 0) {
+
+					//save the newly assigned table, because we might need it below
+					assignedSelectedTable = res[0]
+
+					setSelectedTable(assignedSelectedTable)
+
+					//fetch all clients in selected table
+					window.api.call('list-client', {
+						tableId: assignedSelectedTable.table_id,
+					})
+
+				} else {
+
+					//fetch all clients in selected table
+					window.api.call('list-client', {
+						tableId: selectedTableRef.current.table_id,
+					})
+
+				}
+				
+				//now finally fetch all open clients and populate list
 				window.api.reply('list-client', (event, res) => {
 
 					setClients(res)
 
-					if(res.length) {
+					//if we have not already selected a client then we just closed one,
+					//we select the first one on the list for user and then fetch the order
+					if(res.length && Object.keys(selectedClientRef.current).length === 0) {
 
 						setSelectedClient(res[0])
-						fetchOrder(selectedTable, res[0])
 
-					} else {
+						//check with which table selection we use to fetch the order from
+						if (Object.keys(selectedTableRef.current).length === 0) {
 
-						setSelectedClient()
+							fetchOrder(assignedSelectedTable, res[0])
 
+						} else {
+
+							fetchOrder(selectedTableRef.current, res[0])
+
+						}
+						
 					}
 						
 				})
@@ -67,6 +101,22 @@ function ClientSelectView({
 
 	}, [])
 
+	//use refs in order to get fresh data, need to update as soon as the state changes
+	useEffect(() => {
+
+		selectedTableRef.current = { ...selectedTable }
+
+	}, [selectedTable])
+
+	useEffect(() => {
+
+		selectedClientRef.current = { ...selectedClient }
+
+	}, [selectedClient])
+
+
+	//fetches corresponding order according to table id and client id
+	//it will create a brand new order if no order exists
 	function fetchOrder(table, client) {
 
 		window.api.call('fetch-order', {
@@ -80,6 +130,7 @@ function ClientSelectView({
 		})
 	}
 
+	//handles table selection in table list
 	function handleSelectTable(table) {
 
 		setSelectedTable(table)
@@ -97,6 +148,8 @@ function ClientSelectView({
 		})
 	}
 
+	//handles client selection in client list
+	//e.detail to see if single or double click
 	function handleSelectClient(e, client) {
 
 		switch(e.detail) {
@@ -185,7 +238,7 @@ function ClientSelectView({
 							<>
 								<PanelButton
 									type="confirm"
-									onClick={() => setStep(20)}
+									onClick={() => setStep(20)} //to ItemSelectView
 								/>
 							</>
 							)}
@@ -212,6 +265,7 @@ function ClientSelectView({
 							<div className="client-panel">
 								<PanelButton
 									type="split"
+									onClick={() => console.log('selectedClient', selectedClient)}
 								/>
 								<PanelButton
 									type="payment"

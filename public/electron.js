@@ -306,6 +306,59 @@ ipcMain.handle('next-table-client', async (event, data) => {
 
 })
 
+//tries to find if the client number for given table already exists and return it,
+//if it doesnt find it then it creates it
+ipcMain.handle('fetch-table-client-number', async (event, data) => {
+
+  const tableId = data.tableId
+  const clientNumber = data.clientNumber
+
+  console.log('fetching in table...', tableId, 'client number...', clientNumber)
+
+  const query = 'SELECT * FROM pos_clients WHERE table_id=? AND client_number=?'
+  database.get(query, [tableId, clientNumber], function (err, row) {
+    if (err) {
+      return console.log(err)
+    }
+
+    //client found, send back client object
+    if (row !== undefined) {
+
+        return mainWindow.webContents.send('fetch-table-client-number', row)
+
+    //client not found, create new client
+    } else if (row === undefined) {
+
+      console.log('client not found, creating new client...')
+
+      const query = 'INSERT INTO pos_clients (client_number, table_id) VALUES (?, ?)'
+      database.run(query, [clientNumber+1, tableId], function (err) {
+        if (err) {
+          return console.log(err)
+        }
+
+
+        //using this object because its the only way it works...
+        const lastInsertId = this.lastID
+        console.log('fetching newly created client...', lastInsertId)
+        
+
+        const query = 'SELECT * FROM pos_clients WHERE client_id=?'
+        database.get(query, lastInsertId, function (err, row) {
+          if (err) {
+            return console.log(err)
+          }
+          return mainWindow.webContents.send('fetch-table-client-number', row)
+        })
+
+      })
+
+    }
+
+
+})
+
+
 
 /********************************************************************************************************
  * Tables

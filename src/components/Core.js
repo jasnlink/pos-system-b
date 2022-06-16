@@ -5,6 +5,7 @@ import Welcome from './Welcome';
 import TableSelectView from './TableSelectView'
 import ClientSelectView from './ClientSelectView'
 import ItemSelectView from './ItemSelectView'
+import ItemSplitView from './ItemSplitView'
 import HeaderBar from './HeaderBar'
 
 function Core() {
@@ -181,6 +182,25 @@ function Core() {
 						setCategories={categories => setCategories(categories)}
 						items={items}
 						setItems={items => setItems(items)}
+						order={order}
+						setOrder={ord => setOrder(ord)}
+
+					/>
+				</>
+		      )
+		case 30:
+			return (
+		    	<>
+		    		<HeaderBar date={date} time={time} />
+			    	<ItemSplitView
+			    		timezone={timezone}
+						setStep={step => setStep(step)}
+						selectedTable={selectedTable}
+						setSelectedTable={table => setSelectedTable(table)}
+						selectedClient={selectedClient}
+						setSelectedClient={client => setSelectedClient(client)}
+						clients={clients}
+						setClients={clients => setClients(clients)}
 						order={order}
 						setOrder={ord => setOrder(ord)}
 

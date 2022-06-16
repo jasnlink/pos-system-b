@@ -1,0 +1,36 @@
+.itemsplitview-main {
+	border-top: solid #a5a5a545 1px;
+}
+
+.display-title {
+	color: #ffffff;
+}
+
+.itemsplitview-left,
+.itemsplitview-center,
+.itemsplitview-right {
+	min-height: calc(100vh - 50px);
+	max-height: calc(100vh - 50px);
+}
+.itemsplitview-left,
+.itemsplitview-center {
+	border-right: solid #a5a5a545 3px;
+}
+
+
+.item-list-element-name,
+.item-list-element-price {
+	display: inline-flex;
+}
+
+.itemsplit-panel {
+	margin: 0;
+	padding: 2% 0;
+	border-top: solid 3px #a5a5a545;
+	color: #ffffff;
+	min-height: calc(12vh);
+	max-height: calc(12vh);
+	display: flex;
+	align-items: center;
+  	justify-content: center;
+}

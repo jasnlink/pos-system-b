@@ -199,23 +199,24 @@ function ItemSelectView({
 				<div className="row text-center">
 					<div className="col-4 itemview-left p-0">
 						<div className="row p-0 gx-0">
-						{!!order && (
+							<div className="order-view">
+							{!!order && (
 
-							<OrderDisplay 
-								timezone={timezone}
-								selectedTable={selectedTable}
-								selectedClient={selectedClient}
-								setSelectedClient={client => setSelectedClient(client)}
-								clients={clients}
-								setClients={clients => setClients(clients)}
-								order={order}
-								setOrder={order => setOrder(order)}
-								select={selectedLineItemInList}
-								selectChange={sel => setSelectedLineItemInList(sel)}
-							/>
+								<OrderDisplay 
+									timezone={timezone}
+									selectedTable={selectedTable}
+									selectedClient={selectedClient}
+									setSelectedClient={client => setSelectedClient(client)}
+									clients={clients}
+									setClients={clients => setClients(clients)}
+									order={order}
+									setOrder={order => setOrder(order)}
+									select={selectedLineItemInList}
+									selectChange={sel => setSelectedLineItemInList(sel)}
+								/>
 
-						)}
-							
+							)}
+							</div>
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">

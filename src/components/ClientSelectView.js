@@ -182,16 +182,19 @@ function ClientSelectView({
 				<div className="row text-center">
 					<div className="col-4 clientview-left p-0">
 						<div className="row p-0 gx-0">
-							<OrderDisplay 
-								timezone={timezone}
-								selectedTable={selectedTable}
-								selectedClient={selectedClient}
-								setSelectedClient={client => setSelectedClient(client)}
-								clients={clients}
-								setClients={clients => setClients(clients)}
-								order={order}
-								setOrder={order => setOrder(order)}
-							/>
+							<div className="order-view">
+								<OrderDisplay 
+									timezone={timezone}
+									selectedTable={selectedTable}
+									selectedClient={selectedClient}
+									setSelectedClient={client => setSelectedClient(client)}
+									clients={clients}
+									setClients={clients => setClients(clients)}
+									order={order}
+									setOrder={order => setOrder(order)}
+									clientmode
+								/>
+							</div>
 						</div>
 						<div className="row gx-0">
 							<div className="client-panel">
@@ -265,7 +268,7 @@ function ClientSelectView({
 							<div className="client-panel">
 								<PanelButton
 									type="split"
-									onClick={() => console.log('selectedClient', selectedClient)}
+									onClick={() => setStep(30)} //to ItemSplitView
 								/>
 								<PanelButton
 									type="payment"

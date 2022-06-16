@@ -14,7 +14,9 @@ function OrderDisplay({
 	order, 
 	setOrder,
 	select, 
-	selectChange 
+	selectChange,
+	clientmode=false,
+	splitmode=false 
 }) {
 
 
@@ -189,7 +191,6 @@ function OrderDisplay({
 
 	return (
 		<>
-		<div className="order-view">
 		{!!loading && (
 
 			<div>loading...</div>
@@ -197,8 +198,8 @@ function OrderDisplay({
 		)}
 		{!loading && (
 		<>
-			<div className="line-list-header">
-			{!!selectChange && (
+			<div className={selectChange ? "line-list-header" : "line-list-header-small"}>
+			{!clientmode && !splitmode && (
 				<>
 					<div className="line-list-header-front">
 						<h1 className="line-list-header-title-front">
@@ -239,9 +240,16 @@ function OrderDisplay({
 					</div>
 				</>
 			)}
-			{!selectChange && (
+			{!clientmode && splitmode && (
+				<div className="line-list-header-front">
+					<h1 className="line-list-header-title-front-small">
+						Client #{selectedClient?.client_number}
+					</h1>
+				</div>
+			)}
+			{!!clientmode && (
 				<>
-					<div className="line-list-header-front" onClick={() => console.log('clients...',clients)}>
+					<div className="line-list-header-front">
 						<h1 className="line-list-header-title-front">
 							Bill #{order?.order_id}
 						</h1>
@@ -261,11 +269,11 @@ function OrderDisplay({
 				{order?.line_items?.map((line, index) => (
 				<>
 					<li
-						className={selectChange ? (
+						className={!clientmode ? (
 								select?.order_line_id === line.order_line_id ? "line-list-element line-list-element-active" : "line-list-element"
 							) : "line-list-element-disabled"} 
 						key={index}
-						onClick={selectChange ? () => selectChange(line) : null}
+						onClick={!clientmode ? () => selectChange(line) : null}
 					>
 						<div className="line-list-element-front">
 							<div className="line-list-element-quantity">
@@ -282,59 +290,62 @@ function OrderDisplay({
 				</>
 				))}
 			</ul>
-			<ul className="total-list">
-				<li
-					className={selectChange ? "total-list-element" : "total-list-element-clientview"}
-				>
-					<div className="total-list-element-front">
-						<div className="total-list-element-name">
-							SUBTOTAL
+
+			{!splitmode && (
+
+				<ul className="total-list">
+					<li
+						className={!clientmode ? "total-list-element" : "total-list-element-clientview"}
+					>
+						<div className="total-list-element-front">
+							<div className="total-list-element-name">
+								SUBTOTAL
+							</div>
 						</div>
-					</div>
-					<div className="total-list-element-price">
-						{formatPrice(order?.order_subtotal)}
-					</div>
-				</li>
-				<li
-					className={selectChange ? "total-list-element" : "total-list-element-clientview"}
-				>
-					<div className="total-list-element-front">
-						<div className="total-list-element-name">
-							TPS
+						<div className="total-list-element-price">
+							{formatPrice(order?.order_subtotal)}
 						</div>
-					</div>
-					<div className="total-list-element-price">
-						{formatPrice(order?.order_tps)}
-					</div>
-				</li>
-				<li
-					className={selectChange ? "total-list-element" : "total-list-element-clientview"}
-				>
-					<div className="total-list-element-front">
-						<div className="total-list-element-name">
-							TVQ
+					</li>
+					<li
+						className={!clientmode ? "total-list-element" : "total-list-element-clientview"}
+					>
+						<div className="total-list-element-front">
+							<div className="total-list-element-name">
+								TPS
+							</div>
 						</div>
-					</div>
-					<div className="total-list-element-price">
-						{formatPrice(order?.order_tvq)}
-					</div>
-				</li>
-				<li
-					className={selectChange ? "total-list-element-grandtotal" : "total-list-element-clientview-grandtotal"}
-				>
-					<div className="total-list-element-front">
-						<div className="total-list-element-name">
-							TOTAL
+						<div className="total-list-element-price">
+							{formatPrice(order?.order_tps)}
 						</div>
-					</div>
-					<div className="total-list-element-price">
-						{formatPrice(order?.order_total)}
-					</div>
-				</li>
-			</ul>
+					</li>
+					<li
+						className={!clientmode ? "total-list-element" : "total-list-element-clientview"}
+					>
+						<div className="total-list-element-front">
+							<div className="total-list-element-name">
+								TVQ
+							</div>
+						</div>
+						<div className="total-list-element-price">
+							{formatPrice(order?.order_tvq)}
+						</div>
+					</li>
+					<li
+						className={!clientmode ? "total-list-element-grandtotal" : "total-list-element-clientview-grandtotal"}
+					>
+						<div className="total-list-element-front">
+							<div className="total-list-element-name">
+								TOTAL
+							</div>
+						</div>
+						<div className="total-list-element-price">
+							{formatPrice(order?.order_total)}
+						</div>
+					</li>
+				</ul>
+			)}
 		</>
 		)}	
-		</div>
 		</>
 	)
 

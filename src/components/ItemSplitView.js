@@ -17,6 +17,9 @@ function ItemSplitView({
 	setOrder 
 }) {
 
+	//loading state
+	const [loading, setLoading] = useState(true)
+
 	//stores the aggregate state of current clients and orders, separated as array elements labelled by index
 	//need to store it so we undo/redo
 	const [contextState, setContextState] = useState([])
@@ -25,21 +28,17 @@ function ItemSplitView({
 	const [contextStateCursor, setContextStateCursor] = useState(0)
 
 	//current on screen clients and their orders
-	const [onScreenClients, setOnScreenClients] = useState([])
+	const [onScreenDisplay, setOnScreenDisplay] = useState([])
 
 
 	useEffect(() => {
 
-		//fetch or create order for the current client and table
-		window.api.call('fetch-order', {
-			tableId: selectedTable.table_id,
-			clientId: selectedClient.client_id
+		buildClientOrders(0)
+		.then((res) => {
+			setOnScreenDisplay(res)
+			setLoading(false)
 		})
-		window.api.reply('fetch-order', (event, res) => {
-
-			setOrder(res)
-
-		})
+		
 
 	}, [])
 
@@ -58,9 +57,18 @@ function ItemSplitView({
 		//
 		// [13,14,15,16,17,18] -> 2
 
-		let onScreenClients = []
+		//contains current on screen clients and orders
+		let onScreen = {
+			clients: [],
+			orders: []
+		}
+
+
+		let currentClient
 
 		for(let n = start; n<= end; n++) {
+
+			console.log(n)
 
 			window.api.call('fetch-table-client-number', {
 				tableId: selectedTable.table_id,
@@ -68,47 +76,65 @@ function ItemSplitView({
 			})
 			window.api.reply('fetch-table-client-number', (event, res) => {
 
-				onScreenClients.push(res)
+				currentClient = res
+				console.log('###res', res)
+
+				window.api.call('fetch-order', {
+					tableId: selectedTable.table_id,
+					clientId: currentClient.client_id
+				})
+				window.api.reply('fetch-order', (event, res) => {
+
+					onScreen.clients.push(currentClient)
+					onScreen.orders.push(res)
+
+				})
+
 
 			})
 
 		}
+		console.log(onScreen)
+		return onScreen
 
 	}
 
 	return (
+		<>
+
+		{!!loading && (
+
+			<div>loading...</div>
+
+		)}
+		{!loading && (
 
 		<div className="container-fluid itemsplitview-main">
 				<div className="row text-center">
 					<div className="col-4 itemsplitview-left p-0">
 						<div className="row p-0 gx-0">
 							<div className="order-view">
-								<div className="order-split-view">
-									<OrderDisplay 
-										timezone={timezone}
-										selectedTable={selectedTable}
-										selectedClient={selectedClient}
-										setSelectedClient={client => setSelectedClient(client)}
-										clients={clients}
-										setClients={clients => setClients(clients)}
-										order={order}
-										setOrder={order => setOrder(order)}
-										splitmode
-									/>
-								</div>
-								<div className="order-split-view">
-									<OrderDisplay 
-										timezone={timezone}
-										selectedTable={selectedTable}
-										selectedClient={selectedClient}
-										setSelectedClient={client => setSelectedClient(client)}
-										clients={clients}
-										setClients={clients => setClients(clients)}
-										order={order}
-										setOrder={order => setOrder(order)}
-										splitmode
-									/>
-								</div>
+								
+								{onScreenDisplay.orders.map((order, index) => (
+								<>
+									{index < 2 && (
+										<div className="order-split-view" key={index}>
+											<OrderDisplay 
+												timezone={timezone}
+												selectedTable={selectedTable}
+												selectedClient={onScreenDisplay.clients[index]}
+												setSelectedClient={client => setSelectedClient(client)}
+												clients={onScreenDisplay.clients}
+												setClients={clients => setClients(clients)}
+												order={order}
+												setOrder={order => setOrder(order)}
+												splitmode
+											/>
+										</div>
+									)}
+								</>
+								))}
+									
 							</div>
 						</div>
 						<div className="row gx-0">
@@ -212,7 +238,8 @@ function ItemSplitView({
 					</div>
 				</div>
 			</div>
-
+		)}
+		</>
 	)
 
 }

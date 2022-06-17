@@ -332,7 +332,7 @@ ipcMain.handle('fetch-table-client-number', async (event, data) => {
       console.log('client not found, creating new client...')
 
       const query = 'INSERT INTO pos_clients (client_number, table_id) VALUES (?, ?)'
-      database.run(query, [clientNumber+1, tableId], function (err) {
+      database.run(query, [clientNumber, tableId], function (err) {
         if (err) {
           return console.log(err)
         }
@@ -341,7 +341,7 @@ ipcMain.handle('fetch-table-client-number', async (event, data) => {
         //using this object because its the only way it works...
         const lastInsertId = this.lastID
         console.log('fetching newly created client...', lastInsertId)
-        
+
 
         const query = 'SELECT * FROM pos_clients WHERE client_id=?'
         database.get(query, lastInsertId, function (err, row) {
@@ -356,6 +356,7 @@ ipcMain.handle('fetch-table-client-number', async (event, data) => {
     }
 
 
+  })
 })
 
 

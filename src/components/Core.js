@@ -103,6 +103,7 @@ function Core() {
 
 		//initialize clock
 		currentTime()
+		
 		//useEffect cleanup
 		//need to cleanup timers or they perpetuate and stack
 		return(()=>{

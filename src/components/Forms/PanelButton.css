@@ -101,4 +101,27 @@
 .discount-btn:active {
 	background-color: #5ad2d6;
 }
+
+/* previous */
+.prev-btn {
+	background-color: #067bc2;
+}
+.prev-btn:active {
+	background-color: #3895ce;
+}
+.prev-btn-disabled {
+	pointer-events: none;
+	color: #ffffff80;
+	fill: #ffffff80 !important;
+	background-color: #067bc280
+}
+
+/* next */
+.next-btn {
+	background-color: #067bc2;
+}
+.next-btn:active {
+	background-color: #3895ce;
+}
+
 /**********************/

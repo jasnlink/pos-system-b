@@ -147,6 +147,8 @@
 	align-items: center;
   	justify-content: center;
   	background-color: #067bc2;
+  	fill: #ffffff;
+  	color: #ffffff;
 }
 
 .client-prev-btn:active,
@@ -164,6 +166,7 @@
 	align-items: center;
   	justify-content: center;
 	pointer-events: none;
+	fill: #ffffff80;
 	color: #ffffff80;
 	background-color: #067bc280
 

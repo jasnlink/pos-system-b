@@ -8,10 +8,16 @@ const {
 contextBridge.exposeInMainWorld(
     "api", {
         call: async (channel, data) => {
-            return await ipcRenderer.invoke(channel, data);
+            return await ipcRenderer.invoke(channel, data)
         },
         reply: async (channel, callback) => {
             return await ipcRenderer.once(channel, callback)
         },
+        multiple: async (channel, callback) => {
+            return await ipcRenderer.on(channel, callback)
+        },
+        close: async (channel) => {
+            return await ipcRenderer.removeAllListeners(channel)
+        }
     }
 );

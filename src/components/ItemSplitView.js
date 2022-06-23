@@ -30,21 +30,43 @@ function ItemSplitView({
 	//current on screen clients and their orders
 	const [onScreenDisplay, setOnScreenDisplay] = useState([])
 
+	//keeps track of the current page to offset
+	const [onScreenDisplayOffset, setOnScreenDisplayOffset] = useState(0)
+
 
 	useEffect(() => {
 
-		buildClientOrders(0)
+		buildClientOrders(onScreenDisplayOffset)
 		.then((res) => {
 			setOnScreenDisplay(res)
 			setLoading(false)
 		})
 		
+		return (() => {
+			console.log('unmount...')
+			window.api.close('fetch-table-client-number')
+			window.api.close('fetch-order')
+		})
 
 	}, [])
 
 
+	useEffect(() => {
+
+		setLoading(true)
+
+		buildClientOrders(onScreenDisplayOffset)
+		.then((res) => {
+			setOnScreenDisplay(res)
+			setLoading(false)
+		})
+
+	}, [onScreenDisplayOffset])
+
+
 	//builds all clients and their orders depending on which page we are on
 	async function buildClientOrders(offset) {
+
 
 		//each page offset by 6 clients
 		const start = (offset*6)+1
@@ -66,36 +88,63 @@ function ItemSplitView({
 
 		let currentClient
 
+		//loop in multiples of 6 depending on offset
+		//and fetch clients
 		for(let n = start; n<= end; n++) {
-
-			console.log(n)
 
 			window.api.call('fetch-table-client-number', {
 				tableId: selectedTable.table_id,
 				clientNumber: n
 			})
-			window.api.reply('fetch-table-client-number', (event, res) => {
-
-				currentClient = res
-				console.log('###res', res)
-
-				window.api.call('fetch-order', {
-					tableId: selectedTable.table_id,
-					clientId: currentClient.client_id
-				})
-				window.api.reply('fetch-order', (event, res) => {
-
-					onScreen.clients.push(currentClient)
-					onScreen.orders.push(res)
-
-				})
-
-
-			})
+			
 
 		}
-		console.log(onScreen)
+
+		//listen to all clients being fetched
+		window.api.multiple('fetch-table-client-number', (event, res) => {
+
+			//assign client place in array based on client number
+			//modulo 6 because 6 clients per screen
+			let clientAssignmentIndex = ((res.client_number)-1)%6
+
+			onScreen.clients[clientAssignmentIndex] = res
+
+			window.api.call('fetch-order', {
+				tableId: selectedTable.table_id,
+				clientId: res.client_id
+			})
+			
+		})
+
+		//listen to all orders being fetched
+		window.api.multiple('fetch-order', (event, res) => {
+
+			//match order client_id with client client_id to assign the right order place in array
+			let orderAssignmentIndex = onScreen.clients.findIndex(client => client.client_id === res.client_id)
+
+			onScreen.orders[orderAssignmentIndex] = res
+			
+		})
+
+		
 		return onScreen
+
+	}
+
+	function onChangeDisplayOffset(direction) {
+
+		let offset
+
+		if (direction === 'prev') {
+			offset = -1
+		}
+		if (direction === 'next') {
+			offset = 1
+		}
+
+		offset += onScreenDisplayOffset
+
+		setOnScreenDisplayOffset(offset)
 
 	}
 
@@ -117,7 +166,7 @@ function ItemSplitView({
 								
 								{onScreenDisplay.orders.map((order, index) => (
 								<>
-									{index < 2 && (
+									{(index === 0 || index === 3) && (
 										<div className="order-split-view" key={index}>
 											<OrderDisplay 
 												timezone={timezone}
@@ -140,10 +189,10 @@ function ItemSplitView({
 						<div className="row gx-0">
 							<div className="itemsplit-panel">
 								<PanelButton
-									type="print"
+									type="undo"
 								/>
 								<PanelButton
-									type="printAll"
+									type="undoAll"
 								/>
 							</div>
 						</div>
@@ -151,32 +200,27 @@ function ItemSplitView({
 					<div className="col-4 itemsplitview-center p-0">
 						<div className="row p-0 gx-0">
 							<div className="order-view">
-								<div className="order-split-view">
-									<OrderDisplay 
-										timezone={timezone}
-										selectedTable={selectedTable}
-										selectedClient={selectedClient}
-										setSelectedClient={client => setSelectedClient(client)}
-										clients={clients}
-										setClients={clients => setClients(clients)}
-										order={order}
-										setOrder={order => setOrder(order)}
-										splitmode
-									/>
-								</div>
-								<div className="order-split-view">
-									<OrderDisplay 
-										timezone={timezone}
-										selectedTable={selectedTable}
-										selectedClient={selectedClient}
-										setSelectedClient={client => setSelectedClient(client)}
-										clients={clients}
-										setClients={clients => setClients(clients)}
-										order={order}
-										setOrder={order => setOrder(order)}
-										splitmode
-									/>
-								</div>
+								
+								{onScreenDisplay.orders.map((order, index) => (
+								<>
+									{(index === 1 || index === 4) && (
+										<div className="order-split-view" key={index}>
+											<OrderDisplay 
+												timezone={timezone}
+												selectedTable={selectedTable}
+												selectedClient={onScreenDisplay.clients[index]}
+												setSelectedClient={client => setSelectedClient(client)}
+												clients={onScreenDisplay.clients}
+												setClients={clients => setClients(clients)}
+												order={order}
+												setOrder={order => setOrder(order)}
+												splitmode
+											/>
+										</div>
+									)}
+								</>
+								))}
+									
 							</div>
 						</div>
 						<div className="row gx-0">
@@ -196,42 +240,39 @@ function ItemSplitView({
 					<div className="col-4 itemsplitview-right p-0">
 						<div className="row p-0 gx-0">
 							<div className="order-view">
-								<div className="order-split-view">
-									<OrderDisplay 
-										timezone={timezone}
-										selectedTable={selectedTable}
-										selectedClient={selectedClient}
-										setSelectedClient={client => setSelectedClient(client)}
-										clients={clients}
-										setClients={clients => setClients(clients)}
-										order={order}
-										setOrder={order => setOrder(order)}
-										splitmode
-									/>
-								</div>
-								<div className="order-split-view">
-									<OrderDisplay 
-										timezone={timezone}
-										selectedTable={selectedTable}
-										selectedClient={selectedClient}
-										setSelectedClient={client => setSelectedClient(client)}
-										clients={clients}
-										setClients={clients => setClients(clients)}
-										order={order}
-										setOrder={order => setOrder(order)}
-										splitmode
-									/>
-								</div>
+								
+								{onScreenDisplay.orders.map((order, index) => (
+								<>
+									{(index === 2 || index === 5) && (
+										<div className="order-split-view" key={index}>
+											<OrderDisplay 
+												timezone={timezone}
+												selectedTable={selectedTable}
+												selectedClient={onScreenDisplay.clients[index]}
+												setSelectedClient={client => setSelectedClient(client)}
+												clients={onScreenDisplay.clients}
+												setClients={clients => setClients(clients)}
+												order={order}
+												setOrder={order => setOrder(order)}
+												splitmode
+											/>
+										</div>
+									)}
+								</>
+								))}
+									
 							</div>
 						</div>
 						<div className="row gx-0">
 							<div className="itemsplit-panel">
 								<PanelButton
-									type="split"
+									type="prev"
+									onClick={() => onChangeDisplayOffset('prev')}
+									disabled={onScreenDisplayOffset === 0}
 								/>
 								<PanelButton
-									type="payment"
-									
+									type="next"
+									onClick={() => onChangeDisplayOffset('next')}
 								/>
 							</div>
 						</div>

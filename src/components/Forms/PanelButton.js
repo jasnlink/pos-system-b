@@ -9,6 +9,8 @@ import { ReactComponent as SplitIcon } from './assets/splitIcon.svg'
 import { ReactComponent as PaymentIcon } from './assets/paymentIcon.svg'
 import { ReactComponent as DiscountIcon } from './assets/discountIcon.svg'
 import { ReactComponent as RemoveIcon } from './assets/removeIcon.svg'
+import { ReactComponent as PrevIcon } from './assets/leftArrowIcon.svg'
+import { ReactComponent as NextIcon } from './assets/rightArrowIcon.svg'
 
 
 function PanelButton({ type, disabled=false, onClick }) {
@@ -60,6 +62,30 @@ function PanelButton({ type, disabled=false, onClick }) {
 			return (
 				<div className={disabled ? "remove-btn-disabled panel-btn" : "remove-btn panel-btn"} onClick={onClick}>
 					<RemoveIcon className="panel-icon" /> Remove
+				</div>
+			)
+		case 'undo':
+			return (
+				<div className="print-btn panel-btn" onClick={onClick}>
+					<PrintIcon className="panel-icon" /> Undo
+				</div>
+			)
+		case 'undoAll':
+			return (
+				<div className="print-btn panel-btn" onClick={onClick}>
+					<PrintIcon className="panel-icon" /> Undo All
+				</div>
+			)
+		case 'prev':
+			return (
+				<div className={disabled ? "prev-btn-disabled panel-btn" : "prev-btn panel-btn"} onClick={onClick}>
+					<PrevIcon className="panel-icon" /> Prev
+				</div>
+			)
+		case 'next':
+			return (
+				<div className="next-btn panel-btn" onClick={onClick}>
+					Next <NextIcon className="panel-icon" />
 				</div>
 			)
 		default:

@@ -126,7 +126,7 @@ function ClientSelectView({
 		window.api.reply('fetch-order', (event, res) => {
 
 			setOrder(res)
-
+			window.api.close('fetch-order')
 		})
 	}
 

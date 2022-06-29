@@ -3,6 +3,7 @@ import './OrderDisplay.css'
 
 import { ReactComponent as LeftArrowIcon } from './assets/leftArrowIcon.svg'
 import { ReactComponent as RightArrowIcon } from './assets/rightArrowIcon.svg'
+import { ReactComponent as SeparateIcon } from './assets/separateIcon.svg'
 
 function OrderDisplay({ 
 	timezone, 
@@ -189,6 +190,13 @@ function OrderDisplay({
 
 	}
 
+	function handleSplitItem(item) {
+
+		console.log(item)
+		selectChange()
+
+	}
+
 	return (
 		<>
 		{!!loading && (
@@ -241,11 +249,27 @@ function OrderDisplay({
 				</>
 			)}
 			{!clientmode && splitmode && (
-				<div className="line-list-header-front">
-					<h1 className="line-list-header-title-front-small">
-						Client #{selectedClient?.client_number}
-					</h1>
-				</div>
+				<>
+					<div className="line-list-header-front">
+						<h1 className="line-list-header-title-front-small">
+							Client #{selectedClient?.client_number}
+						</h1>
+					</div>
+					{!!select && (
+					<>
+						{select?.order_id !== order?.order_id && (
+							<div className="line-list-header-back">
+								<div 
+									className="separate-btn"
+									onClick={() => handleSplitItem(select)}
+								>
+									<SeparateIcon className="separate-icon" />
+								</div>
+							</div>
+						)}
+					</>
+					)}
+				</>
 			)}
 			{!!clientmode && (
 				<>

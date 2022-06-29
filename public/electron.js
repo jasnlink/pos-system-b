@@ -720,6 +720,20 @@ ipcMain.handle('remove-item-order', async (event, data) => {
 })
 
 
+//split selected item from order
+ipcMain.handle('split-item-order', async (event,data) => {
+
+  const orderId = data.orderId
+  const lineItemId = data.lineItemId
+
+
+  
+
+
+
+})
+
+
 /********************************************************************************************************
  * Settings
 ********************************************************************************************************/

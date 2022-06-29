@@ -33,6 +33,9 @@ function ItemSplitView({
 	//keeps track of the current page to offset
 	const [onScreenDisplayOffset, setOnScreenDisplayOffset] = useState(0)
 
+	//tracks currently selected item in lists
+	const [selectedLineItemInList, setSelectedLineItemInList] = useState()
+
 
 	useEffect(() => {
 
@@ -43,25 +46,15 @@ function ItemSplitView({
 		})
 		
 		return (() => {
+
 			console.log('unmount...')
+
 			window.api.close('fetch-table-client-number')
 			window.api.close('fetch-order')
+
 		})
 
 	}, [])
-
-
-	useEffect(() => {
-
-		setLoading(true)
-
-		buildClientOrders(onScreenDisplayOffset)
-		.then((res) => {
-			setOnScreenDisplay(res)
-			setLoading(false)
-		})
-
-	}, [onScreenDisplayOffset])
 
 
 	//builds all clients and their orders depending on which page we are on
@@ -126,12 +119,14 @@ function ItemSplitView({
 			
 		})
 
-		
+		console.log(onScreen)	
 		return onScreen
 
 	}
 
 	function onChangeDisplayOffset(direction) {
+
+		setLoading(true)
 
 		let offset
 
@@ -143,8 +138,54 @@ function ItemSplitView({
 		}
 
 		offset += onScreenDisplayOffset
-
 		setOnScreenDisplayOffset(offset)
+
+		clearClientOrders()
+		.then((res) => {
+
+			buildClientOrders(offset)
+			.then((res) => {
+				setOnScreenDisplay(res)
+				setLoading(false)
+			})
+
+		})
+		
+	}
+
+	async function clearClientOrders() {
+
+		const cache = onScreenDisplay.orders
+
+		for (order of cache) {
+
+			if (order['line_items'].length === 0) {
+
+				window.api.call('close-client', {
+					tableId: selectedTable.table_id,
+					clientId: order.client_id
+				})
+
+			}
+
+		}
+
+		return null
+
+	}
+
+	function handleGoBack() {
+
+		clearClientOrders()
+		.then((res) => {
+			setStep(11) // to client select view
+		})
+
+	}
+
+	function handleSplitItem(item) {
+
+		
 
 	}
 
@@ -159,129 +200,134 @@ function ItemSplitView({
 		{!loading && (
 
 		<div className="container-fluid itemsplitview-main">
-				<div className="row text-center">
-					<div className="col-4 itemsplitview-left p-0">
-						<div className="row p-0 gx-0">
-							<div className="order-view">
-								
-								{onScreenDisplay.orders.map((order, index) => (
-								<>
-									{(index === 0 || index === 3) && (
-										<div className="order-split-view" key={index}>
-											<OrderDisplay 
-												timezone={timezone}
-												selectedTable={selectedTable}
-												selectedClient={onScreenDisplay.clients[index]}
-												setSelectedClient={client => setSelectedClient(client)}
-												clients={onScreenDisplay.clients}
-												setClients={clients => setClients(clients)}
-												order={order}
-												setOrder={order => setOrder(order)}
-												splitmode
-											/>
-										</div>
-									)}
-								</>
-								))}
-									
-							</div>
-						</div>
-						<div className="row gx-0">
-							<div className="itemsplit-panel">
-								<PanelButton
-									type="undo"
-								/>
-								<PanelButton
-									type="undoAll"
-								/>
-							</div>
-						</div>
-					</div>
-					<div className="col-4 itemsplitview-center p-0">
-						<div className="row p-0 gx-0">
-							<div className="order-view">
-								
-								{onScreenDisplay.orders.map((order, index) => (
-								<>
-									{(index === 1 || index === 4) && (
-										<div className="order-split-view" key={index}>
-											<OrderDisplay 
-												timezone={timezone}
-												selectedTable={selectedTable}
-												selectedClient={onScreenDisplay.clients[index]}
-												setSelectedClient={client => setSelectedClient(client)}
-												clients={onScreenDisplay.clients}
-												setClients={clients => setClients(clients)}
-												order={order}
-												setOrder={order => setOrder(order)}
-												splitmode
-											/>
-										</div>
-									)}
-								</>
-								))}
-									
-							</div>
-						</div>
-						<div className="row gx-0">
-							<div className="itemsplit-panel">
-								<PanelButton
-									type="back"
-									onClick={() => setStep(11)} // to client select view
-								/>
+			<div className="row text-center">
+				<div className="col-4 itemsplitview-left p-0">
+					<div className="row p-0 gx-0">
+						<div className="order-view">
+							
+							{onScreenDisplay.orders.map((order, index) => (
 							<>
-								<PanelButton
-									type="confirm"
-								/>
+								{(index === 0 || index === 3) && (
+									<div className="order-split-view" key={index}>
+										<OrderDisplay 
+											timezone={timezone}
+											selectedTable={selectedTable}
+											selectedClient={onScreenDisplay.clients[index]}
+											setSelectedClient={client => setSelectedClient(client)}
+											clients={onScreenDisplay.clients}
+											setClients={clients => setClients(clients)}
+											order={order}
+											setOrder={order => setOrder(order)}
+											select={selectedLineItemInList}
+											selectChange={sel => setSelectedLineItemInList(sel)}
+											splitmode
+										/>
+									</div>
+								)}
 							</>
-							</div>
+							))}
+								
 						</div>
 					</div>
-					<div className="col-4 itemsplitview-right p-0">
-						<div className="row p-0 gx-0">
-							<div className="order-view">
-								
-								{onScreenDisplay.orders.map((order, index) => (
-								<>
-									{(index === 2 || index === 5) && (
-										<div className="order-split-view" key={index}>
-											<OrderDisplay 
-												timezone={timezone}
-												selectedTable={selectedTable}
-												selectedClient={onScreenDisplay.clients[index]}
-												setSelectedClient={client => setSelectedClient(client)}
-												clients={onScreenDisplay.clients}
-												setClients={clients => setClients(clients)}
-												order={order}
-												setOrder={order => setOrder(order)}
-												splitmode
-											/>
-										</div>
-									)}
-								</>
-								))}
-									
-							</div>
+					<div className="row gx-0">
+						<div className="itemsplit-panel">
+							<PanelButton
+								type="undo"
+							/>
+							<PanelButton
+								type="undoAll"
+							/>
 						</div>
-						<div className="row gx-0">
-							<div className="itemsplit-panel">
-								<PanelButton
-									type="prev"
-									onClick={() => onChangeDisplayOffset('prev')}
-									disabled={onScreenDisplayOffset === 0}
-								/>
-								<PanelButton
-									type="next"
-									onClick={() => onChangeDisplayOffset('next')}
-								/>
-							</div>
+					</div>
+				</div>
+				<div className="col-4 itemsplitview-center p-0">
+					<div className="row p-0 gx-0">
+						<div className="order-view">
+							
+							{onScreenDisplay.orders.map((order, index) => (
+							<>
+								{(index === 1 || index === 4) && (
+									<div className="order-split-view" key={index}>
+										<OrderDisplay 
+											timezone={timezone}
+											selectedTable={selectedTable}
+											selectedClient={onScreenDisplay.clients[index]}
+											setSelectedClient={client => setSelectedClient(client)}
+											clients={onScreenDisplay.clients}
+											setClients={clients => setClients(clients)}
+											order={order}
+											setOrder={order => setOrder(order)}
+											select={selectedLineItemInList}
+											selectChange={sel => setSelectedLineItemInList(sel)}
+											splitmode
+										/>
+									</div>
+								)}
+							</>
+							))}
+								
+						</div>
+					</div>
+					<div className="row gx-0">
+						<div className="itemsplit-panel">
+							<PanelButton
+								type="back"
+								onClick={() => handleGoBack()}
+							/>
+						<>
+							<PanelButton
+								type="confirm"
+							/>
+						</>
+						</div>
+					</div>
+				</div>
+				<div className="col-4 itemsplitview-right p-0">
+					<div className="row p-0 gx-0">
+						<div className="order-view">
+							
+							{onScreenDisplay.orders.map((order, index) => (
+							<>
+								{(index === 2 || index === 5) && (
+									<div className="order-split-view" key={index}>
+										<OrderDisplay 
+											timezone={timezone}
+											selectedTable={selectedTable}
+											selectedClient={onScreenDisplay.clients[index]}
+											setSelectedClient={client => setSelectedClient(client)}
+											clients={onScreenDisplay.clients}
+											setClients={clients => setClients(clients)}
+											order={order}
+											setOrder={order => setOrder(order)}
+											select={selectedLineItemInList}
+											selectChange={sel => setSelectedLineItemInList(sel)}
+											splitmode
+										/>
+									</div>
+								)}
+							</>
+							))}
+								
+						</div>
+					</div>
+					<div className="row gx-0">
+						<div className="itemsplit-panel">
+							<PanelButton
+								type="prev"
+								onClick={() => onChangeDisplayOffset('prev')}
+								disabled={onScreenDisplayOffset === 0}
+							/>
+							<PanelButton
+								type="next"
+								onClick={() => onChangeDisplayOffset('next')}
+							/>
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 		)}
 		</>
 	)
-
 }
 export default ItemSplitView

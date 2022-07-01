@@ -3,7 +3,8 @@ import './OrderDisplay.css'
 
 import { ReactComponent as LeftArrowIcon } from './assets/leftArrowIcon.svg'
 import { ReactComponent as RightArrowIcon } from './assets/rightArrowIcon.svg'
-import { ReactComponent as SeparateIcon } from './assets/separateIcon.svg'
+import { ReactComponent as LineSeparateIcon } from './assets/separateIcon.svg'
+import { ReactComponent as TargetIcon } from './assets/targetIcon.svg'
 
 function OrderDisplay({ 
 	timezone, 
@@ -197,6 +198,13 @@ function OrderDisplay({
 
 	}
 
+	function handleMoveItem(item) {
+
+		console.log(item)
+		selectChange()
+
+	}
+
 	return (
 		<>
 		{!!loading && (
@@ -257,16 +265,28 @@ function OrderDisplay({
 					</div>
 					{!!select && (
 					<>
+						<div className="line-list-header-back">
 						{select?.order_id !== order?.order_id && (
-							<div className="line-list-header-back">
+						<>
+							
 								<div 
-									className="separate-btn"
+									className="line-move-btn"
+									onClick={() => handleMoveItem(select)}
+								>
+									<TargetIcon className="line-move-icon" />
+								</div>
+								
+							
+						</>
+						)}
+								<div 
+									className="line-separate-btn"
 									onClick={() => handleSplitItem(select)}
 								>
-									<SeparateIcon className="separate-icon" />
+									<LineSeparateIcon className="line-separate-icon" />
 								</div>
-							</div>
-						)}
+								
+						</div>
 					</>
 					)}
 				</>

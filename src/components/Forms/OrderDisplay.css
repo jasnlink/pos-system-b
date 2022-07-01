@@ -181,7 +181,8 @@
 	fill: #ffffff;
 }
 
-.separate-btn {
+.line-move-btn,
+.line-separate-btn {
 
 	display: inline-flex;
 	min-height: 20px;
@@ -190,23 +191,41 @@
 	border-radius: 4px;
 	align-items: center;
   	justify-content: center;
-  	background-color: #067bc2;
   	fill: #ffffff;
   	color: #ffffff;
 
 }
 
-.separate-btn:active {
+.line-separate-btn {
 
-	background-color: #3895ce;
+  	background-color: #F9A620;
 
 }
 
-.separate-icon {
+.line-separate-btn:active {
+
+	background-color: #fab84d;
+
+}
+
+.line-move-icon,
+.line-separate-icon {
 	height: 28px;
 	width: 28px;
 	display: flex;
 	fill: #ffffff;
+}
+
+.line-move-btn {
+
+  	background-color: #067bc2;
+
+}
+
+.line-move-btn:active {
+	
+  	background-color: #3895ce;
+
 }
 
 .line-list-element {

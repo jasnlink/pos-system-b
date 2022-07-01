@@ -185,7 +185,23 @@ function ItemSplitView({
 
 	function handleSplitItem(item) {
 
-		
+
+
+	}
+
+	function handleMoveItem(order, item) {
+
+		window.api.call('move-item-order', {
+			orderId: order.order_id,
+			lineItemId: item.order_line_id
+		})
+		window.api.reply('move-item-order', (event, res) => {
+
+			if (res === 1) {
+				return
+			}
+
+		})
 
 	}
 

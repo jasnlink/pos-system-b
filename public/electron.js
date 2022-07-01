@@ -721,13 +721,36 @@ ipcMain.handle('remove-item-order', async (event, data) => {
 
 
 //split selected item from order
-ipcMain.handle('split-item-order', async (event,data) => {
+ipcMain.handle('split-item-order', async (event, data) => {
 
   const orderId = data.orderId
   const lineItemId = data.lineItemId
 
+})
 
-  
+
+//move selected item from order to another
+ipcMain.handle('move-item-order', async (event, data) => {
+
+  const orderId = data.order_id
+  const lineItemId = data.lineItemId
+
+  // get target line item
+  // get target order
+  // change order id of the target line item
+  // retrieve target order item list with added item
+  // retrieve old order item list with removed item
+
+  // change order id of the selected line item
+  const query = 'UPDATE pos_order_lines SET order_id=? WHERE order_line_id=?'
+  database.run(query, [orderId, lineItemId], function (err) {
+    if (err) {
+      return console.log(err)
+    }
+
+    return mainWindow.webContents.send('move-item-order', 1)
+
+  })
 
 
 

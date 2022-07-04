@@ -68,20 +68,25 @@ function ClientSelectView({
 
 					setClients(res)
 
-					//if we have not already selected a client then we just closed one,
-					//we select the first one on the list for user and then fetch the order
-					if(res.length && Object.keys(selectedClientRef.current).length === 0) {
+					if (res.length) {
 
-						setSelectedClient(res[0])
+						//if we have not already selected a client then we just closed one,
+						//we select the first one on the list for user and then fetch the order
+						if (Object.keys(selectedClientRef.current).length === 0) {
+							setSelectedClient(res[0])
 
-						//check with which table selection we use to fetch the order from
-						if (Object.keys(selectedTableRef.current).length === 0) {
+							//check with which table selection we use to fetch the order from
+							if (Object.keys(selectedTableRef.current).length === 0) {
+								fetchOrder(assignedSelectedTable, res[0])
 
-							fetchOrder(assignedSelectedTable, res[0])
+							} else {
 
+								fetchOrder(selectedTableRef.current, res[0])
+
+							}
 						} else {
-
-							fetchOrder(selectedTableRef.current, res[0])
+							//if a client is already selected then we come from item select view or item split view, just reload the order for fresh order data
+							fetchOrder(selectedTableRef.current, selectedClientRef.current)
 
 						}
 						

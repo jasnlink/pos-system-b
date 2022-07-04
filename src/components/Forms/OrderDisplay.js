@@ -17,6 +17,7 @@ function OrderDisplay({
 	setOrder,
 	select, 
 	selectChange,
+	handleMoveItem,
 	clientmode=false,
 	splitmode=false 
 }) {
@@ -198,13 +199,6 @@ function OrderDisplay({
 
 	}
 
-	function handleMoveItem(item) {
-
-		console.log(item)
-		selectChange()
-
-	}
-
 	return (
 		<>
 		{!!loading && (
@@ -271,7 +265,7 @@ function OrderDisplay({
 							
 								<div 
 									className="line-move-btn"
-									onClick={() => handleMoveItem(select)}
+									onClick={() => handleMoveItem(order, select)}
 								>
 									<TargetIcon className="line-move-icon" />
 								</div>

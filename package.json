@@ -1,6 +1,6 @@
 {
   "name": "pos-system-b",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",

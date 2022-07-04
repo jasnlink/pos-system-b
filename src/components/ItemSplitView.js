@@ -192,16 +192,22 @@ function ItemSplitView({
 	function handleMoveItem(order, item) {
 
 		window.api.call('move-item-order', {
-			orderId: order.order_id,
-			lineItemId: item.order_line_id
+			order: order,
+			lineItem: item
 		})
 		window.api.reply('move-item-order', (event, res) => {
 
-			if (res === 1) {
-				return
-			}
+			setSelectedLineItemInList(res)
+			setLoading(true)
+
+			buildClientOrders(onScreenDisplayOffset)
+			.then((res) => {
+				setOnScreenDisplay(res)
+				setLoading(false)
+			})
 
 		})
+		
 
 	}
 
@@ -236,6 +242,7 @@ function ItemSplitView({
 											setOrder={order => setOrder(order)}
 											select={selectedLineItemInList}
 											selectChange={sel => setSelectedLineItemInList(sel)}
+											handleMoveItem={(order, item) => handleMoveItem(order, item)}
 											splitmode
 										/>
 									</div>
@@ -275,6 +282,7 @@ function ItemSplitView({
 											setOrder={order => setOrder(order)}
 											select={selectedLineItemInList}
 											selectChange={sel => setSelectedLineItemInList(sel)}
+											handleMoveItem={(order, item) => handleMoveItem(order, item)}
 											splitmode
 										/>
 									</div>
@@ -317,6 +325,7 @@ function ItemSplitView({
 											setOrder={order => setOrder(order)}
 											select={selectedLineItemInList}
 											selectChange={sel => setSelectedLineItemInList(sel)}
+											handleMoveItem={(order, item) => handleMoveItem(order, item)}
 											splitmode
 										/>
 									</div>

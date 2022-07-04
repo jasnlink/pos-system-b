@@ -732,27 +732,102 @@ ipcMain.handle('split-item-order', async (event, data) => {
 //move selected item from order to another
 ipcMain.handle('move-item-order', async (event, data) => {
 
-  const orderId = data.order_id
-  const lineItemId = data.lineItemId
+  const order = data.order
+  const lineItem = data.lineItem
+  const lineItemId = lineItem.order_line_id
 
+  const prevOrderId = lineItem.order_id
+  const nextOrderId = order.order_id
+
+  console.log('moving item to new order...', lineItemId)
+  
   // get target line item
   // get target order
   // change order id of the target line item
   // retrieve target order item list with added item
   // retrieve old order item list with removed item
 
+
   // change order id of the selected line item
   const query = 'UPDATE pos_order_lines SET order_id=? WHERE order_line_id=?'
-  database.run(query, [orderId, lineItemId], function (err) {
+  database.run(query, [nextOrderId, lineItemId], function (err) {
     if (err) {
       return console.log(err)
     }
 
-    return mainWindow.webContents.send('move-item-order', 1)
+    
+    console.log('getting previous order info...')
+
+    // get prev order info
+    const query = 'SELECT * FROM pos_orders WHERE order_id=?'
+    database.get(query, prevOrderId, function (err, row) {
+      if (err) {
+        return console.log(err)
+      }
+
+      console.log('######################### ROW', row)
+
+      // calculate prev order totals
+      const amountToCompute = lineItem.subtotal
+      console.log('######################### amountToCompute', amountToCompute)
+
+      let subtotal = row.order_subtotal
+      console.log('######################### subtotal', subtotal)
+
+      subtotal -= amountToCompute
+      console.log('######################### subtotal++', subtotal)
+
+      let tps = Math.round(subtotal*0.05)
+      let tvq = Math.round(subtotal*0.09975)
+      let total = subtotal+tps+tvq
+
+      console.log('updating previous order info...')
+
+      // update previous order totals
+      const query = 'UPDATE pos_orders SET order_subtotal=?, order_tps=?, order_tvq=?, order_total=? WHERE order_id=?'
+      database.run(query, [subtotal, tps, tvq, total, prevOrderId], function (err) {
+        if (err) {
+          return console.log(err)
+        }
+
+
+        // calculate next order totals
+        let subtotal = order.order_subtotal
+        subtotal += amountToCompute
+
+        let tps = Math.round(subtotal*0.05)
+        let tvq = Math.round(subtotal*0.09975)
+        let total = subtotal+tps+tvq
+
+        console.log('updating next order info...')
+
+        // update next order totals
+        const query = 'UPDATE pos_orders SET order_subtotal=?, order_tps=?, order_tvq=?, order_total=? WHERE order_id=?'
+        database.run(query, [subtotal, tps, tvq, total, nextOrderId], function (err) {
+          if (err) {
+            return console.log(err)
+          }
+
+          console.log('getting updated row info...')
+
+          // get updated row
+          const query = 'SELECT * FROM pos_order_lines WHERE order_line_id=?'
+          database.get(query, lineItemId, function (err, row) {
+            if (err) {
+              return console.log(err)
+            }
+
+            return mainWindow.webContents.send('move-item-order', row)
+
+          })
+
+        })
+
+      })
+
+    })
 
   })
-
-
 
 })
 

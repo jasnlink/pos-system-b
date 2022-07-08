@@ -28,7 +28,10 @@ function ItemSplitView({
 	const [contextStateCursor, setContextStateCursor] = useState(0)
 
 	//current on screen clients and their orders
-	const [onScreenDisplay, setOnScreenDisplay] = useState([])
+	const [onScreenDisplay, setOnScreenDisplay] = useState({
+			clients: [],
+			orders: []
+		})
 
 	//keeps track of the current page to offset
 	const [onScreenDisplayOffset, setOnScreenDisplayOffset] = useState(0)
@@ -38,6 +41,12 @@ function ItemSplitView({
 
 
 	useEffect(() => {
+
+		//listen to all clients being fetched
+		window.api.multiple('fetch-table-client-number', (event, res) => {handleFetchClientOrders(event, res)})
+
+		//listen to all orders being fetched
+		window.api.multiple('fetch-order', (event, res) => {assignClientOrders(event, res)})
 
 		buildClientOrders(onScreenDisplayOffset)
 		.then((res) => {
@@ -57,6 +66,41 @@ function ItemSplitView({
 	}, [])
 
 
+	function handleFetchClientOrders(event, res) {
+
+		//contains current on screen clients and orders
+		let onScreen = onScreenDisplay
+
+		//assign client place in array based on client number
+		//modulo 6 because 6 clients per screen
+		let clientAssignmentIndex = ((res.client_number)-1)%6
+
+		onScreen.clients[clientAssignmentIndex] = res
+
+		window.api.call('fetch-order', {
+			tableId: selectedTable.table_id,
+			clientId: res.client_id
+		})
+
+		setOnScreenDisplay(onScreen)
+
+	}
+
+	function assignClientOrders(event, res) {
+
+		//contains current on screen clients and orders
+		let onScreen = onScreenDisplay
+
+		//match order client_id with client client_id to assign the right order place in array
+		let orderAssignmentIndex = onScreen.clients.findIndex(client => client.client_id === res.client_id)
+
+		onScreen.orders[orderAssignmentIndex] = res
+
+		setOnScreenDisplay(onScreen)
+
+	}
+
+
 	//builds all clients and their orders depending on which page we are on
 	async function buildClientOrders(offset) {
 
@@ -72,13 +116,6 @@ function ItemSplitView({
 		//
 		// [13,14,15,16,17,18] -> 2
 
-		//contains current on screen clients and orders
-		let onScreen = {
-			clients: [],
-			orders: []
-		}
-
-
 		let currentClient
 
 		//loop in multiples of 6 depending on offset
@@ -93,34 +130,7 @@ function ItemSplitView({
 
 		}
 
-		//listen to all clients being fetched
-		window.api.multiple('fetch-table-client-number', (event, res) => {
-
-			//assign client place in array based on client number
-			//modulo 6 because 6 clients per screen
-			let clientAssignmentIndex = ((res.client_number)-1)%6
-
-			onScreen.clients[clientAssignmentIndex] = res
-
-			window.api.call('fetch-order', {
-				tableId: selectedTable.table_id,
-				clientId: res.client_id
-			})
-			
-		})
-
-		//listen to all orders being fetched
-		window.api.multiple('fetch-order', (event, res) => {
-
-			//match order client_id with client client_id to assign the right order place in array
-			let orderAssignmentIndex = onScreen.clients.findIndex(client => client.client_id === res.client_id)
-
-			onScreen.orders[orderAssignmentIndex] = res
-			
-		})
-
-		console.log(onScreen)	
-		return onScreen
+		return null
 
 	}
 
@@ -144,8 +154,7 @@ function ItemSplitView({
 		.then((res) => {
 
 			buildClientOrders(offset)
-			.then((res) => {
-				setOnScreenDisplay(res)
+			.then(() => {
 				setLoading(false)
 			})
 
@@ -177,7 +186,7 @@ function ItemSplitView({
 	function handleGoBack() {
 
 		clearClientOrders()
-		.then((res) => {
+		.then(() => {
 			setStep(11) // to client select view
 		})
 
@@ -201,8 +210,7 @@ function ItemSplitView({
 			setLoading(true)
 
 			buildClientOrders(onScreenDisplayOffset)
-			.then((res) => {
-				setOnScreenDisplay(res)
+			.then(() => {
 				setLoading(false)
 			})
 
@@ -227,7 +235,7 @@ function ItemSplitView({
 					<div className="row p-0 gx-0">
 						<div className="order-view">
 							
-							{onScreenDisplay.orders.map((order, index) => (
+							{onScreenDisplay?.orders?.map((order, index) => (
 							<>
 								{(index === 0 || index === 3) && (
 									<div className="order-split-view" key={index}>
@@ -267,7 +275,7 @@ function ItemSplitView({
 					<div className="row p-0 gx-0">
 						<div className="order-view">
 							
-							{onScreenDisplay.orders.map((order, index) => (
+							{onScreenDisplay?.orders?.map((order, index) => (
 							<>
 								{(index === 1 || index === 4) && (
 									<div className="order-split-view" key={index}>
@@ -310,7 +318,7 @@ function ItemSplitView({
 					<div className="row p-0 gx-0">
 						<div className="order-view">
 							
-							{onScreenDisplay.orders.map((order, index) => (
+							{onScreenDisplay?.orders?.map((order, index) => (
 							<>
 								{(index === 2 || index === 5) && (
 									<div className="order-split-view" key={index}>

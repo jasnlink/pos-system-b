@@ -44,15 +44,10 @@ function ItemSplitView({
 
 		//listen to all clients being fetched
 		window.api.multiple('fetch-table-client-number', (event, res) => {handleFetchClientOrders(event, res)})
-
 		//listen to all orders being fetched
 		window.api.multiple('fetch-order', (event, res) => {assignClientOrders(event, res)})
 
 		buildClientOrders(onScreenDisplayOffset)
-		.then((res) => {
-			setOnScreenDisplay(res)
-			setLoading(false)
-		})
 		
 		return (() => {
 
@@ -97,6 +92,8 @@ function ItemSplitView({
 		onScreen.orders[orderAssignmentIndex] = res
 
 		setOnScreenDisplay(onScreen)
+
+		setLoading(false)
 
 	}
 
@@ -154,9 +151,6 @@ function ItemSplitView({
 		.then((res) => {
 
 			buildClientOrders(offset)
-			.then(() => {
-				setLoading(false)
-			})
 
 		})
 		
@@ -210,9 +204,6 @@ function ItemSplitView({
 			setLoading(true)
 
 			buildClientOrders(onScreenDisplayOffset)
-			.then(() => {
-				setLoading(false)
-			})
 
 		})
 		

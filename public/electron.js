@@ -765,17 +765,13 @@ ipcMain.handle('move-item-order', async (event, data) => {
         return console.log(err)
       }
 
-      console.log('######################### ROW', row)
 
       // calculate prev order totals
       const amountToCompute = lineItem.subtotal
-      console.log('######################### amountToCompute', amountToCompute)
 
       let subtotal = row.order_subtotal
-      console.log('######################### subtotal', subtotal)
 
       subtotal -= amountToCompute
-      console.log('######################### subtotal++', subtotal)
 
       let tps = Math.round(subtotal*0.05)
       let tvq = Math.round(subtotal*0.09975)

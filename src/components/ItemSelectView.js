@@ -118,6 +118,12 @@ function ItemSelectView({
 
 	}
 
+	function handleSelectChange(order, item) {
+
+
+
+	}
+
 	//formats price from cents to dollars
 	function formatPrice(price) {
 
@@ -212,7 +218,7 @@ function ItemSelectView({
 									order={order}
 									setOrder={order => setOrder(order)}
 									select={selectedLineItemInList}
-									selectChange={sel => setSelectedLineItemInList(sel)}
+									selectChange={(order, item) => setSelectedLineItemInList(item)}
 								/>
 
 							)}

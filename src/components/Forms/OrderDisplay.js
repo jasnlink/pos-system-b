@@ -192,9 +192,11 @@ function OrderDisplay({
 
 	}
 
+	//split item handler
 	function handleSplitItem(item) {
 
 		console.log(item)
+		//this resets the selected line item to undefined
 		selectChange()
 
 	}
@@ -311,7 +313,7 @@ function OrderDisplay({
 								select?.order_line_id === line.order_line_id ? "line-list-element line-list-element-active" : "line-list-element"
 							) : "line-list-element-disabled"} 
 						key={index}
-						onClick={!clientmode ? () => selectChange(line) : null}
+						onClick={!clientmode ? () => selectChange(order, line) : null}
 					>
 						<div className="line-list-element-front">
 							<div className="line-list-element-quantity">

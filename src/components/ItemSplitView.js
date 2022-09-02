@@ -21,7 +21,7 @@ function ItemSplitView({
 	const [loading, setLoading] = useState(true)
 
 	//stores the aggregate state of current clients and orders, separated as array elements labelled by index
-	//need to store it so we undo/redo
+	//need to store it so we can undo/redo
 	const [contextState, setContextState] = useState([])
 
 	//current index of the aggregate state
@@ -36,6 +36,9 @@ function ItemSplitView({
 	//keeps track of the current page to offset
 	const [onScreenDisplayOffset, setOnScreenDisplayOffset] = useState(0)
 
+	//keeps track of the currently selected order in lists
+	const [selectedOrderInList, setSelectedOrderInList] = useState()
+
 	//tracks currently selected item in lists
 	const [selectedLineItemInList, setSelectedLineItemInList] = useState()
 
@@ -48,6 +51,10 @@ function ItemSplitView({
 		window.api.multiple('fetch-order', (event, res) => {assignClientOrders(event, res)})
 
 		buildClientOrders(onScreenDisplayOffset)
+		.then(() => {
+			console.log(onScreenDisplay)
+			setLoading(false)
+		})
 		
 		return (() => {
 
@@ -59,7 +66,6 @@ function ItemSplitView({
 		})
 
 	}, [])
-
 
 	function handleFetchClientOrders(event, res) {
 
@@ -81,7 +87,11 @@ function ItemSplitView({
 
 	}
 
+	//this assigns the orders that it receives (they don't always come in the right order) to their place
+	//in an ordered list to be displayed on screen
 	function assignClientOrders(event, res) {
+
+		setLoading(true)
 
 		//contains current on screen clients and orders
 		let onScreen = onScreenDisplay
@@ -90,10 +100,9 @@ function ItemSplitView({
 		let orderAssignmentIndex = onScreen.clients.findIndex(client => client.client_id === res.client_id)
 
 		onScreen.orders[orderAssignmentIndex] = res
+		setOnScreenDisplay({...onScreen}) //must spread or else react detects the change to rerender sluggishly slow
+		return setLoading(false)
 
-		setOnScreenDisplay(onScreen)
-
-		setLoading(false)
 
 	}
 
@@ -131,6 +140,15 @@ function ItemSplitView({
 
 	}
 
+	async function buildSingleClientOrder(clientId) {
+
+		window.api.call('fetch-order', {
+			tableId: selectedTable.table_id,
+			clientId: clientId
+		})
+
+	}
+
 	function onChangeDisplayOffset(direction) {
 
 		setLoading(true)
@@ -151,6 +169,10 @@ function ItemSplitView({
 		.then((res) => {
 
 			buildClientOrders(offset)
+			.then(() => {
+				console.log(onScreenDisplay)
+				setLoading(false)
+			})
 
 		})
 		
@@ -194,6 +216,8 @@ function ItemSplitView({
 
 	function handleMoveItem(order, item) {
 
+		console.log('handleMoveItem...item', item)
+
 		window.api.call('move-item-order', {
 			order: order,
 			lineItem: item
@@ -203,10 +227,59 @@ function ItemSplitView({
 			setSelectedLineItemInList(res)
 			setLoading(true)
 
-			buildClientOrders(onScreenDisplayOffset)
+			//refetch prev order without the moved item
+			//find previous order in on screen display array list from the currently selected item's order id
+			let prevOrder = selectedOrderInList
+			buildSingleClientOrder(prevOrder.client_id)
+			.then(() => {
+
+				//refetch next order with the moved item
+				let nextOrder = order
+				buildSingleClientOrder(nextOrder.client_id)
+				setSelectedOrderInList(nextOrder)
+
+				console.log('handleMoveItem...prevOrder', prevOrder)
+				console.log('handleMoveItem...nextOrder', nextOrder)
+
+				//buildClientOrders(onScreenDisplayOffset)
+
+			})
+
 
 		})
 		
+
+	}
+
+	//handles selection changes, updates selected or and selected item
+	function handleSelectChange(order, item) {
+
+		setSelectedOrderInList(order)
+		setSelectedLineItemInList(item)
+
+	}
+
+	//handles adding to the context state, each new change uses this method
+	function handleAddContext(method, args) {
+
+		let currentContextStateCursor = contextStateCursor
+		let currentContextState = contextState
+
+		let newContextObject = {
+			method: method,
+			args: args
+		}
+
+		currentContextStateCursor++
+		setContextStateCursor(currentContextStateCursor)
+
+		currentContextState.push(newContextObject)
+		setContextState(currentContextState)
+
+	}
+
+	//handles undoing, decrements the context state cursor and calls the context state
+	function handleUndo() {
 
 	}
 
@@ -240,7 +313,7 @@ function ItemSplitView({
 											order={order}
 											setOrder={order => setOrder(order)}
 											select={selectedLineItemInList}
-											selectChange={sel => setSelectedLineItemInList(sel)}
+											selectChange={(order, item) => handleSelectChange(order, item)}
 											handleMoveItem={(order, item) => handleMoveItem(order, item)}
 											splitmode
 										/>
@@ -280,7 +353,7 @@ function ItemSplitView({
 											order={order}
 											setOrder={order => setOrder(order)}
 											select={selectedLineItemInList}
-											selectChange={sel => setSelectedLineItemInList(sel)}
+											selectChange={(order, item) => handleSelectChange(order, item)}
 											handleMoveItem={(order, item) => handleMoveItem(order, item)}
 											splitmode
 										/>
@@ -323,7 +396,7 @@ function ItemSplitView({
 											order={order}
 											setOrder={order => setOrder(order)}
 											select={selectedLineItemInList}
-											selectChange={sel => setSelectedLineItemInList(sel)}
+											selectChange={(order, item) => handleSelectChange(order, item)}
 											handleMoveItem={(order, item) => handleMoveItem(order, item)}
 											splitmode
 										/>

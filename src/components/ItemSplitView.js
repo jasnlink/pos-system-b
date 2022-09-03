@@ -24,9 +24,6 @@ function ItemSplitView({
 	//need to store it so we can undo/redo
 	const [contextState, setContextState] = useState([])
 
-	//current index of the aggregate state
-	const [contextStateCursor, setContextStateCursor] = useState(0)
-
 	//current on screen clients and their orders
 	const [onScreenDisplay, setOnScreenDisplay] = useState({
 			clients: [],
@@ -38,6 +35,8 @@ function ItemSplitView({
 
 	//keeps track of the currently selected order in lists
 	const [selectedOrderInList, setSelectedOrderInList] = useState()
+	//use a ref to keep data fresh
+	const selectedOrderInListRef = useRef()
 
 	//tracks currently selected item in lists
 	const [selectedLineItemInList, setSelectedLineItemInList] = useState()
@@ -52,7 +51,6 @@ function ItemSplitView({
 
 		buildClientOrders(onScreenDisplayOffset)
 		.then(() => {
-			console.log(onScreenDisplay)
 			setLoading(false)
 		})
 		
@@ -67,6 +65,14 @@ function ItemSplitView({
 
 	}, [])
 
+	//keep track of order changes and push into useref to get fresh data
+	useEffect(() => {
+
+		selectedOrderInListRef.current = { ...selectedOrderInList }
+
+	}, [selectedOrderInList])
+
+	//handles fetching client orders and assigning them to their on screen display slot
 	function handleFetchClientOrders(event, res) {
 
 		//contains current on screen clients and orders
@@ -103,9 +109,7 @@ function ItemSplitView({
 		setOnScreenDisplay({...onScreen}) //must spread or else react detects the change to rerender sluggishly slow
 		return setLoading(false)
 
-
 	}
-
 
 	//builds all clients and their orders depending on which page we are on
 	async function buildClientOrders(offset) {
@@ -132,7 +136,6 @@ function ItemSplitView({
 				tableId: selectedTable.table_id,
 				clientNumber: n
 			})
-			
 
 		}
 
@@ -140,6 +143,7 @@ function ItemSplitView({
 
 	}
 
+	//handles fetching a single order
 	async function buildSingleClientOrder(clientId) {
 
 		window.api.call('fetch-order', {
@@ -149,6 +153,7 @@ function ItemSplitView({
 
 	}
 
+	//handles navigating to previous and next screens
 	function onChangeDisplayOffset(direction) {
 
 		setLoading(true)
@@ -170,7 +175,6 @@ function ItemSplitView({
 
 			buildClientOrders(offset)
 			.then(() => {
-				console.log(onScreenDisplay)
 				setLoading(false)
 			})
 
@@ -178,6 +182,7 @@ function ItemSplitView({
 		
 	}
 
+	//handles deleting all empty open orders, this is called before unmounting
 	async function clearClientOrders() {
 
 		const cache = onScreenDisplay.orders
@@ -199,6 +204,7 @@ function ItemSplitView({
 
 	}
 
+	//handles going back to the previous screen
 	function handleGoBack() {
 
 		clearClientOrders()
@@ -208,15 +214,15 @@ function ItemSplitView({
 
 	}
 
+	//handles splitting line items to multiple orders
 	function handleSplitItem(item) {
 
 
 
 	}
 
-	function handleMoveItem(order, item) {
-
-		console.log('handleMoveItem...item', item)
+	//handles moving items from order to order
+	function handleMoveItem(order, item, undo=false) {
 
 		window.api.call('move-item-order', {
 			order: order,
@@ -224,12 +230,13 @@ function ItemSplitView({
 		})
 		window.api.reply('move-item-order', (event, res) => {
 
-			setSelectedLineItemInList(res)
+			let nextSelectedLineItemInList = res
+			setSelectedLineItemInList(nextSelectedLineItemInList)
 			setLoading(true)
 
 			//refetch prev order without the moved item
 			//find previous order in on screen display array list from the currently selected item's order id
-			let prevOrder = selectedOrderInList
+			let prevOrder = selectedOrderInListRef.current
 			buildSingleClientOrder(prevOrder.client_id)
 			.then(() => {
 
@@ -238,16 +245,20 @@ function ItemSplitView({
 				buildSingleClientOrder(nextOrder.client_id)
 				setSelectedOrderInList(nextOrder)
 
-				console.log('handleMoveItem...prevOrder', prevOrder)
-				console.log('handleMoveItem...nextOrder', nextOrder)
+				if(undo === false) {
+
+					handleAddContext(handleMoveItem, {
+						order: prevOrder,
+						item: nextSelectedLineItemInList
+					})
+
+				}
 
 				//buildClientOrders(onScreenDisplayOffset)
 
 			})
 
-
 		})
-		
 
 	}
 
@@ -262,16 +273,12 @@ function ItemSplitView({
 	//handles adding to the context state, each new change uses this method
 	function handleAddContext(method, args) {
 
-		let currentContextStateCursor = contextStateCursor
 		let currentContextState = contextState
 
 		let newContextObject = {
 			method: method,
 			args: args
 		}
-
-		currentContextStateCursor++
-		setContextStateCursor(currentContextStateCursor)
 
 		currentContextState.push(newContextObject)
 		setContextState(currentContextState)
@@ -280,6 +287,20 @@ function ItemSplitView({
 
 	//handles undoing, decrements the context state cursor and calls the context state
 	function handleUndo() {
+
+		if(contextState.length) {
+			
+			let currentContextState = contextState
+			let selectedContextState = currentContextState.pop()
+
+			let undo = selectedContextState.method
+			let args = selectedContextState.args
+
+			undo(args.order, args.item, true)
+
+			setContextState(currentContextState)
+
+		}
 
 	}
 
@@ -328,6 +349,7 @@ function ItemSplitView({
 						<div className="itemsplit-panel">
 							<PanelButton
 								type="undo"
+								onClick={() => handleUndo()}
 							/>
 							<PanelButton
 								type="undoAll"

@@ -118,12 +118,6 @@ function ItemSelectView({
 
 	}
 
-	function handleSelectChange(order, item) {
-
-
-
-	}
-
 	//formats price from cents to dollars
 	function formatPrice(price) {
 
@@ -173,9 +167,9 @@ function ItemSelectView({
 			} else {
 				setSelectedLineItemInList()
 			}
-			
 
 		})
+
 	}
 
 	//remove selected item from order
@@ -197,6 +191,7 @@ function ItemSelectView({
 			}
 
 		})
+
 	}
 
 	return (

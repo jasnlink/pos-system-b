@@ -29,6 +29,7 @@ function ItemSplitView({
 			clients: [],
 			orders: []
 		})
+	const onScreenDisplayRef = useRef()
 
 	//keeps track of the current page to offset
 	const [onScreenDisplayOffset, setOnScreenDisplayOffset] = useState(0)
@@ -40,6 +41,8 @@ function ItemSplitView({
 
 	//tracks currently selected item in lists
 	const [selectedLineItemInList, setSelectedLineItemInList] = useState()
+	//use a ref to keep data fresh
+	const selectedLineItemInListRef = useRef()
 
 
 	useEffect(() => {
@@ -71,6 +74,20 @@ function ItemSplitView({
 		selectedOrderInListRef.current = { ...selectedOrderInList }
 
 	}, [selectedOrderInList])
+
+	//keep track of selected item in list changes and push into useref to get fresh data
+	useEffect(() => {
+
+		selectedLineItemInListRef.current = { ...selectedLineItemInList }
+
+	}, [selectedLineItemInList])
+
+	//keep track of onscreen display orders changes and push into useref to get fresh data
+	useEffect(() => {
+
+		onScreenDisplayRef.current = { ...onScreenDisplay }
+
+	}, [onScreenDisplay])
 
 	//handles fetching client orders and assigning them to their on screen display slot
 	function handleFetchClientOrders(event, res) {
@@ -224,12 +241,15 @@ function ItemSplitView({
 	//handles moving items from order to order
 	function handleMoveItem(order, item, undo=false) {
 
+		console.log('line item current...', item)
+
 		window.api.call('move-item-order', {
 			order: order,
 			lineItem: item
 		})
 		window.api.reply('move-item-order', (event, res) => {
 
+			console.log('line item new...', res)
 			let nextSelectedLineItemInList = res
 			setSelectedLineItemInList(nextSelectedLineItemInList)
 			setLoading(true)
@@ -298,9 +318,37 @@ function ItemSplitView({
 
 			undo(args.order, args.item, true)
 
-			setContextState(currentContextState)
+			setContextState([...currentContextState])
 
 		}
+
+	}
+
+	function handleUndoAll() {
+
+		// console.log('contextState',contextState)
+
+		// if(contextState.length) {
+
+		// 	let currentContextState = contextState
+
+		// 	for(let i = currentContextState.length-1; i >= 0; i--) {
+		// 		console.log('undo!!!')
+				
+		// 		let selectedContextState = currentContextState[i]
+
+		// 		let undo = selectedContextState.method
+		// 		let args = selectedContextState.args
+
+		// 		undo(args.order, args.item, true)
+
+		// 	}
+
+		// 	setContextState([])
+
+		// }
+
+		console.log(selectedLineItemInList)
 
 	}
 
@@ -353,6 +401,7 @@ function ItemSplitView({
 							/>
 							<PanelButton
 								type="undoAll"
+								onClick={() => handleUndoAll()}
 							/>
 						</div>
 					</div>
